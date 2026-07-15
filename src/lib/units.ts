@@ -406,11 +406,11 @@ export function draxBiomassContext(opts: {
 export function powerKindLabel(kind: PowerKind): string {
   switch (kind) {
     case "max_proposed_mw":
-      return "largest size in the proposal";
+      return "biggest size stated for this site";
     case "grid_connection_mw":
       return "grid connection applied for";
     case "phase_1_mw":
-      return "first build phase only";
+      return "first stage only";
     case "it_load_mw":
       return "IT equipment only";
   }
@@ -420,14 +420,38 @@ export function powerKindLabel(kind: PowerKind): string {
 export function powerKindExplanation(kind: PowerKind): string {
   switch (kind) {
     case "max_proposed_mw":
-      return "The biggest power size the proposal claims it could reach. A planning ceiling, not how much it will draw every hour.";
+      return "The largest megawatt figure on the public record for this one site (planning docs or operator materials). It may include stages that are not built yet. Not everyday electricity use; the source sits with the number.";
     case "grid_connection_mw":
       return "How big a link to the electricity grid they applied for or described. Not the same as everyday use.";
     case "phase_1_mw":
-      return "Power size for the first build only. Later phases may ask for more.";
+      return "Power size for the first stage of construction only. They may seek more later.";
     case "it_load_mw":
       return "Power for the computers alone, as written in planning materials. Still a stated size, not metered use.";
   }
+}
+
+/**
+ * Sort helper: higher MW first; equal MW ordered A–Z by site name so
+ * joint maxima (e.g. two 1 GW schemes) stay stable and do not invent a sole “largest”.
+ */
+export function compareSitesByPower(
+  aMw: number,
+  aName: string,
+  bMw: number,
+  bName: string,
+): number {
+  if (bMw !== aMw) return bMw - aMw;
+  return aName.localeCompare(bName, "en", { sensitivity: "base" });
+}
+
+/** Competition ranks (1,1,3…) for a MW-sorted list — equal sizes share a rank. */
+export function powerCompetitionRanks(mwValues: number[]): number[] {
+  const ranks: number[] = [];
+  for (let i = 0; i < mwValues.length; i++) {
+    if (i > 0 && mwValues[i] === mwValues[i - 1]) ranks.push(ranks[i - 1]!);
+    else ranks.push(i + 1);
+  }
+  return ranks;
 }
 
 export function basisLabel(basis: Basis): string {

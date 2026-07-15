@@ -78,14 +78,17 @@ const correctionMailto = correctionsMailto();
   </section>
 
   <section class="mt-12" id="power">
-    <h2 class="font-display text-xl m-0">Power size is not electricity use</h2>
+    <h2 class="font-display text-xl m-0">Stated size is not electricity use</h2>
     <p class="mt-3 max-w-2xl">
-      When this site says <strong>Power</strong>, it means how large the proposal or grid connection is, in megawatts.
-      That is a size on paper. It is not how much electricity the site will draw while running.
+      When this site says <strong>Stated size</strong>, it means how large <em>that data-centre scheme</em> claims to be,
+      in megawatts: usually the biggest size stated for that site, otherwise the grid connection applied for,
+      otherwise the first stage only. The source for the chosen figure sits with the number on the site page and map panel.
+      That is a size on paper for one site. It is not how much electricity the facility will draw while running, and it is not a
+      regional total when two schemes publish the same figure.
     </p>
     <p class="mt-3 max-w-2xl">{LOAD_FACTOR_DISCLOSURE}</p>
     <ul class="max-w-2xl">
-      <li><strong>Stated power size</strong> (nameplate or contracted): fair for like-for-like power comparisons only (for example kettles). Measured in megawatts (MW).</li>
+      <li><strong>Stated size</strong> (nameplate or contracted): fair for like-for-like size comparisons only (for example kettles). Measured in megawatts (MW).</li>
       <li><strong>Assumed average use</strong>: stated size × {Math.round(LOAD_FACTOR.low * 100)}-{Math.round(LOAD_FACTOR.high * 100)}% load factor. All energy comparisons use this, always as a range.</li>
       <li><strong>Measured energy</strong>: supersedes assumptions when available.</li>
     </ul>
@@ -126,11 +129,20 @@ const correctionMailto = correctionsMailto();
   <section class="mt-12" id="circles">
     <h2 class="font-display text-xl m-0">Circle scaling</h2>
     <p class="mt-3 max-w-2xl">
-      Map circles scale by the best available power size in fixed priority:
-      largest size in the proposal, then grid connection applied for, then first build phase only.
-      Each site page states which was used. On the map, circle size is compressed so a 5.6&nbsp;MW site
-      remains clickable beside a 1&nbsp;gigawatt (1,000&nbsp;MW) proposal; the scale bar shows that.
-      Sites with no disclosed power render as hollow dashed circles sized by site area (acres).
+      Map circles scale by the best available power size for <em>that site</em>, in fixed field priority:
+      biggest size stated for that site, then grid connection applied for, then first stage only.
+      Each site page states which field was used and the source of that figure.
+      If two sites publish the same megawatts, both keep that size (joint maximum); compare ranks them equal and lists them A-Z.
+      Conflicting maxima in different documents: we record one figure with its source. We do not average.
+      Map circle sizes follow the megawatt key in the legend, which squeezes the range so a 5.6&nbsp;MW
+      site stays clickable beside a 1&nbsp;gigawatt (1,000&nbsp;MW) scheme. Do not treat circle area as
+      proportional to megawatts on the map. Compare does use true proportions: twice the megawatts is twice the area.
+      Sites with no disclosed megawatts render as dashed circles sized by site area (acres).
+      If area is also unknown, a small dashed marker still appears at the published location
+      (Eggborough today). That marks presence only, not a size claim.
+      Colour encodes planning status with a colour-vision-friendly set
+      (warm stone, purple, ochre, teal, blue) so consecutive stages stay in distant hues.
+      Outline style (solid vs dashed) is separate: whether megawatts are disclosed.
       The compare view draws circles so area matches megawatts (twice the power looks twice as large).
     </p>
   </section>

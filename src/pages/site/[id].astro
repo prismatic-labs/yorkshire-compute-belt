@@ -58,7 +58,7 @@ const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name
 
   <section class="mt-10 grid gap-6 sm:grid-cols-3">
     <div class="border-t border-[var(--ink)] pt-3">
-      <h2 class="text-xs uppercase tracking-wider text-[var(--muted)] m-0 font-medium">Power</h2>
+      <h2 class="text-xs uppercase tracking-wider text-[var(--muted)] m-0 font-medium">Stated size</h2>
       <p class="font-display text-2xl m-0 mt-1 font-tabular">
         {best ? `${formatNumber(best.quantity.value)} MW` : "Not disclosed"}
       </p>
@@ -70,12 +70,18 @@ const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name
       ) : (
         <p class="text-sm m-0 mt-1 text-[var(--muted)]">No megawatt figure in materials reviewed</p>
       )}
+      {best && (
+        <p class="text-xs m-0 mt-2 text-[var(--muted)] max-w-xs leading-snug">
+          Source: {best.quantity.source}
+          {best.quantity.page ? ` (${best.quantity.page})` : ""}
+        </p>
+      )}
       <p class="text-xs m-0 mt-2 text-[var(--muted)] max-w-xs">
         {best
           ? powerKindExplanation(best.kind)
           : "Operators often omit a megawatt figure. Map circles then use site area instead."}
         {" "}
-        <a href={`${base}/methodology#power`}>Power size is not electricity use</a>.
+        <a href={`${base}/methodology#power`}>Stated size is not electricity use</a>.
       </p>
     </div>
     <div class="border-t border-[var(--ink)] pt-3">
@@ -237,7 +243,7 @@ const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name
   <section class="mt-12">
     <h2 class="font-display text-xl m-0">Disclosure checklist</h2>
     <ul class="mt-3 text-sm columns-1 sm:columns-2 gap-8">
-      <li>Power: {disclosure.power ? "disclosed" : "not disclosed"}</li>
+      <li>Stated size (MW): {disclosure.power ? "disclosed" : "not disclosed"}</li>
       <li>Water: {disclosure.water ? "disclosed" : "not disclosed"}</li>
       <li>Power usage effectiveness (PUE): {disclosure.pue ? "disclosed" : "not disclosed"}</li>
       <li>Energy source claim: {disclosure.energy_source ? "on record" : "none on record"}</li>

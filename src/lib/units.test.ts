@@ -7,10 +7,12 @@ import {
   LOAD_FACTOR,
   assumedAnnualGwh,
   bestPower,
+  compareSitesByPower,
   footballPitchesEquivalence,
   homesEquivalence,
   kettleEquivalence,
   localGeographyEquivalence,
+  powerCompetitionRanks,
   toKettles,
   waterResidentsEquivalence,
   weakestBasis,
@@ -50,6 +52,17 @@ describe("bestPower priority", () => {
       it_load_mw: null,
     };
     expect(bestPower(power)?.kind).toBe("phase_1_mw");
+  });
+});
+
+describe("equal power sizes", () => {
+  it("orders ties A–Z by name", () => {
+    expect(compareSitesByPower(1000, "Elsham", 1000, "Drax")).toBeGreaterThan(0);
+    expect(compareSitesByPower(1000, "Drax", 1000, "Elsham")).toBeLessThan(0);
+  });
+
+  it("shares competition ranks for joint maxima", () => {
+    expect(powerCompetitionRanks([1000, 1000, 386, 5.6])).toEqual([1, 1, 3, 4]);
   });
 });
 

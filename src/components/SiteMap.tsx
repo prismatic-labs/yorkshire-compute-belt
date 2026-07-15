@@ -36,7 +36,6 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
     map.on("load", () => {
       for (const site of sites) {
         const scale = circleScale(site.properties);
-        if (!scale) continue;
         const [lng, lat] = site.geometry.coordinates;
         const el = document.createElement("button");
         el.type = "button";
@@ -44,12 +43,13 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
         el.setAttribute("aria-label", site.properties.name);
         const r = Math.max(14, mapRadiusMetres(scale) / 280);
         const colour = statusColour(site.properties.status);
-        const dashed = scale.mode === "acreage_undisclosed";
+        const dashed = scale.mode !== "power";
         el.style.width = `${r * 2}px`;
         el.style.height = `${r * 2}px`;
         el.style.borderRadius = "50%";
-        el.style.border = dashed ? `2px dashed ${colour}` : `2px solid ${colour}`;
-        el.style.background = dashed ? "transparent" : `${colour}33`;
+        el.style.border = dashed ? `2.5px dashed ${colour}` : `2px solid ${colour}`;
+        // Whisper of fill on dashed rings so sites like Skelton stay visible on Positron
+        el.style.background = dashed ? `${colour}28` : `${colour}33`;
         el.style.cursor = "pointer";
         el.style.padding = "0";
         el.addEventListener("click", (e) => {
@@ -128,19 +128,35 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
           </div>
           <p className="text-sm mt-3 mb-0">{selected.properties.summary}</p>
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-sm mt-3 mb-0">
-            <dt className="text-[var(--muted)]">Power</dt>
+            <dt className="text-[var(--muted)]">Stated size</dt>
             <dd className="m-0 font-tabular">
-              {best
-                ? `${formatNumber(best.quantity.value)} megawatts · ${powerKindLabel(best.kind)}`
-                : scale?.mode === "acreage_undisclosed"
-                  ? "Not disclosed; circle sized by site area"
-                  : "Not disclosed"}
+              {best ? (
+                <>
+                  <span>
+                    {formatNumber(best.quantity.value)} megawatts · {powerKindLabel(best.kind)}
+                  </span>
+                  <span className="block text-xs text-[var(--muted)] font-sans font-normal mt-0.5 leading-snug">
+                    How large the scheme claims to be, not how much electricity it will use day to day.
+                  </span>
+                  <span className="block text-xs text-[var(--muted)] font-sans font-normal mt-0.5 leading-snug">
+                    Source: {best.quantity.source}
+                  </span>
+                </>
+              ) : scale?.mode === "acreage_undisclosed" ? (
+                "Not disclosed; circle sized by site area"
+              ) : scale?.mode === "location_only" ? (
+                "Not disclosed; marker shows location only"
+              ) : (
+                "Not disclosed"
+              )}
             </dd>
             <dt className="text-[var(--muted)]">Site area</dt>
             <dd className="m-0 font-tabular">
               {selected.properties.land.acres
                 ? `${formatNumber(selected.properties.land.acres.value)} acres`
-                : "Unknown"}
+                : scale?.mode === "location_only"
+                  ? "Not disclosed"
+                  : "Unknown"}
               {" · "}
               {selected.properties.land.land_type === "brownfield"
                 ? "brownfield"
@@ -168,34 +184,70 @@ function ScaleBar() {
     { label: "100 MW", mw: 100 },
     { label: "1 GW", mw: 1000 },
   ];
+  const statusKeys: Array<{ label: string; colour: string }> = [
+    { label: "Proposed", colour: statusColour("proposed") },
+    { label: "In planning", colour: statusColour("in_planning") },
+    { label: "Approved", colour: statusColour("approved") },
+    { label: "Building", colour: statusColour("under_construction") },
+    { label: "Operating", colour: statusColour("operating") },
+  ];
   return (
     <div
-      className="absolute bottom-3 left-3 z-10 max-w-[16.5rem] rounded-md border border-[var(--line)] bg-[var(--map-panel)] px-3 py-2.5 text-xs shadow-sm"
-      aria-label="How to read map circles. Filled circles show disclosed power. Dashed hollow circles mean megawatts not disclosed; size is by site area."
+      className="absolute bottom-3 left-3 z-10 max-w-[17.5rem] rounded-md border border-[var(--line)] bg-[var(--map-panel)] px-3 py-2.5 text-xs shadow-sm"
+      aria-label="How to read map circles. Colour is planning status. Outline style is whether power is disclosed. Size is megawatts or site area."
     >
-      <p className="m-0 mb-1.5 font-display tracking-wide uppercase text-[0.65rem] text-[var(--muted)]">
+      <p className="m-0 mb-2 font-display tracking-wide uppercase text-[0.65rem] text-[var(--muted)]">
         How to read the circles
+      </p>
+
+      <p className="m-0 mb-1 text-[0.65rem] text-[var(--muted)]">
+        Colour = planning status
+      </p>
+      <ul className="m-0 mb-2.5 list-none grid grid-cols-2 grid-rows-3 grid-flow-col gap-x-3 gap-y-1 p-0 text-[0.7rem] leading-snug text-[var(--ink)]">
+        {statusKeys.map((s) => (
+          <li key={s.label} className="flex items-center gap-1.5 min-w-0">
+            <span
+              className="inline-block shrink-0 rounded-full border-2"
+              style={{
+                width: 12,
+                height: 12,
+                borderColor: s.colour,
+                background: `${s.colour}66`,
+              }}
+              aria-hidden
+            />
+            <span className="truncate">{s.label}</span>
+          </li>
+        ))}
+      </ul>
+
+      <p className="m-0 mb-1 text-[0.65rem] text-[var(--muted)]">
+        Outline = size disclosed
       </p>
       <ul className="m-0 mb-2.5 list-none space-y-1.5 p-0 text-[0.7rem] leading-snug text-[var(--ink)]">
         <li className="flex items-center gap-2">
           <span
-            className="inline-block shrink-0 rounded-full border-2 border-[var(--umber)] bg-[var(--umber)]/25"
+            className="inline-block shrink-0 rounded-full border-2 border-[var(--ink)] bg-[var(--ink)]/20"
             style={{ width: 14, height: 14 }}
             aria-hidden
           />
-          <span>Filled: power disclosed (size by megawatts)</span>
+          <span>Solid fill: megawatts published</span>
         </li>
         <li className="flex items-center gap-2">
           <span
-            className="inline-block shrink-0 rounded-full border-2 border-dashed border-[var(--umber)] bg-transparent"
+            className="inline-block shrink-0 rounded-full border-2 border-dashed border-[var(--ink)] bg-transparent"
             style={{ width: 14, height: 14 }}
             aria-hidden
           />
-          <span>Dashed: megawatts not disclosed (size by site area)</span>
+          <span>Dashed: megawatts not disclosed (sized by site area, or location only if area unknown)</span>
         </li>
       </ul>
-      <p className="m-0 mb-1.5 font-display tracking-wide uppercase text-[0.65rem] text-[var(--muted)]">
-        Power scale (compressed so small sites stay visible)
+      <p className="m-0 mb-2 text-[0.65rem] text-[var(--muted)] leading-snug">
+        Grey demos above are style only, not a status colour.
+      </p>
+
+      <p className="m-0 mb-1.5 text-[0.65rem] text-[var(--muted)]">
+        Size = stated megawatts when known
       </p>
       <div className="flex items-end gap-3">
         {refs.map((r) => {
@@ -203,7 +255,7 @@ function ScaleBar() {
           return (
             <div key={r.label} className="flex flex-col items-center gap-1">
               <span
-                className="rounded-full border-2 border-[var(--umber)] bg-[var(--umber)]/20"
+                className="rounded-full border-2 border-[var(--ink)] bg-[var(--ink)]/15"
                 style={{ width: px, height: px }}
                 aria-hidden
               />

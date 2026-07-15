@@ -1,7 +1,13 @@
 import { useMemo, useRef, useState } from "react";
 import type { SiteFeature } from "../lib/types";
 import { compareRadiusPx, statusColour } from "../lib/mapScale";
-import { bestPower, formatNumber, powerKindLabel } from "../lib/units";
+import {
+  bestPower,
+  compareSitesByPower,
+  formatNumber,
+  powerCompetitionRanks,
+  powerKindLabel,
+} from "../lib/units";
 
 interface Props {
   sites: SiteFeature[];
@@ -18,23 +24,32 @@ export default function CompareView({ sites, baseUrl, siteUrl }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [exportNote, setExportNote] = useState<string | null>(null);
 
-  const { withPower, withoutPower } = useMemo(() => {
+  const { withPower, withoutPower, powerRanks, powerMw } = useMemo(() => {
     const withP: SiteFeature[] = [];
     const without: SiteFeature[] = [];
     for (const s of sites) {
       if (bestPower(s.properties.power)) withP.push(s);
       else without.push(s);
     }
-    withP.sort(
-      (a, b) =>
-        (bestPower(b.properties.power)?.quantity.value ?? 0) -
-        (bestPower(a.properties.power)?.quantity.value ?? 0),
+    withP.sort((a, b) =>
+      compareSitesByPower(
+        bestPower(a.properties.power)?.quantity.value ?? 0,
+        a.properties.name,
+        bestPower(b.properties.power)?.quantity.value ?? 0,
+        b.properties.name,
+      ),
     );
     without.sort(
       (a, b) =>
         (b.properties.land.acres?.value ?? 0) - (a.properties.land.acres?.value ?? 0),
     );
-    return { withPower: withP, withoutPower: without };
+    const mwValues = withP.map((s) => bestPower(s.properties.power)!.quantity.value);
+    return {
+      withPower: withP,
+      withoutPower: without,
+      powerRanks: powerCompetitionRanks(mwValues),
+      powerMw: mwValues,
+    };
   }, [sites]);
 
   const sortedAll = useMemo(
@@ -90,7 +105,7 @@ export default function CompareView({ sites, baseUrl, siteUrl }: Props) {
 
       ctx.beginPath();
       ctx.arc(cx, cy, Math.max(r, 4), 0, Math.PI * 2);
-      if (mode === "acreage_undisclosed") {
+      if (mode === "acreage_undisclosed" || mode === "location_only") {
         ctx.setLineDash([6, 5]);
         ctx.strokeStyle = colour;
         ctx.lineWidth = 2;
@@ -163,16 +178,19 @@ export default function CompareView({ sites, baseUrl, siteUrl }: Props) {
 
       <section>
         <h2 className="font-display text-lg m-0 tracking-tight">
-          Disclosed power (largest first)
+          Stated size disclosed (by megawatts)
         </h2>
         <p className="text-sm text-[var(--muted)] mt-1 mb-4 max-w-2xl">
-          Sorted by stated power size: largest size in the proposal if published, otherwise
-          the grid connection applied for, otherwise the first build phase. Same colour rules
-          as the map (status).
+          Sorted by each site’s published power size: biggest size stated for that site if
+          recorded, otherwise grid connection applied for, otherwise first stage only. Equal
+          megawatt figures share a rank (joint largest) and are listed A-Z. Circle area matches
+          megawatts; colour is status, same as the map.
         </p>
         <ol className="list-none m-0 p-0 space-y-3 border border-[var(--line)] bg-white/40">
           {withPower.map((site, i) => {
             const best = bestPower(site.properties.power)!;
+            const rank = powerRanks[i]!;
+            const tied = powerMw.filter((v) => v === best.quantity.value).length > 1;
             const { r } = compareRadiusPx(best.quantity.value, null, {
               maxMw: 1000,
               maxPx: 40,
@@ -185,7 +203,9 @@ export default function CompareView({ sites, baseUrl, siteUrl }: Props) {
                   href={`${baseUrl}/site/${site.properties.id}`}
                   className="grid grid-cols-[2rem_5.5rem_1fr] sm:grid-cols-[2.5rem_6.5rem_1fr_auto] items-center gap-3 sm:gap-4 px-3 py-3 no-underline text-[var(--ink)] hover:bg-[var(--paper)]"
                 >
-                  <span className="font-tabular text-[var(--muted)] text-sm">{i + 1}</span>
+                  <span className="font-tabular text-[var(--muted)] text-sm">
+                    {tied ? `${rank}=` : rank}
+                  </span>
                   <span className="flex h-[5.5rem] sm:h-[6.5rem] items-center justify-center" aria-hidden>
                     <span
                       className="rounded-full block shrink-0"
@@ -226,8 +246,9 @@ export default function CompareView({ sites, baseUrl, siteUrl }: Props) {
             Megawatts not disclosed
           </h2>
           <p className="text-sm text-[var(--muted)] mt-1 mb-4 max-w-2xl">
-            These sites have no public megawatt figure. Dashed circles are sized by site area
-            (acres) so “not disclosed” stays visible. Do not read them as power size against the list above.
+            These sites have no public megawatt figure. Dashed circles use site area when known;
+            if area is also unknown, the marker is location only. Do not read them as size against
+            the list above.
           </p>
           <ul className="list-none m-0 p-0 space-y-3 border border-[var(--line)] border-dashed bg-white/40">
             {withoutPower.map((site) => {
@@ -280,42 +301,71 @@ export default function CompareView({ sites, baseUrl, siteUrl }: Props) {
 }
 
 function Legend() {
+  const statusKeys: Array<{ label: string; colour: string }> = [
+    { label: "Proposed", colour: statusColour("proposed") },
+    { label: "In planning", colour: statusColour("in_planning") },
+    { label: "Approved", colour: statusColour("approved") },
+    { label: "Building", colour: statusColour("under_construction") },
+    { label: "Operating", colour: statusColour("operating") },
+  ];
   return (
     <div
       className="text-sm border border-[var(--line)] bg-[var(--paper)] px-3 py-2 max-w-md"
-      aria-label="How to read the circles"
+      aria-label="How to read the circles. Colour is planning status. Outline is disclosure. Size is megawatts or site area."
     >
       <p className="m-0 font-display text-xs uppercase tracking-wider text-[var(--muted)]">
         How to read
       </p>
-      <ul className="m-0 mt-2 pl-0 list-none space-y-1.5">
-        <li className="flex items-center gap-2">
+      <p className="m-0 mt-2 text-xs text-[var(--muted)]">Colour = planning status</p>
+      <ul className="m-0 mt-1.5 pl-0 list-none grid grid-cols-2 grid-rows-3 grid-flow-col gap-x-3 gap-y-1">
+        {statusKeys.map((s) => (
+          <li key={s.label} className="flex items-center gap-1.5 text-xs">
+            <span
+              className="inline-block rounded-full shrink-0"
+              style={{
+                width: 12,
+                height: 12,
+                border: `2px solid ${s.colour}`,
+                background: `${s.colour}66`,
+              }}
+              aria-hidden
+            />
+            <span>{s.label}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="m-0 mt-2.5 text-xs text-[var(--muted)]">Outline = size disclosed</p>
+      <ul className="m-0 mt-1.5 pl-0 list-none space-y-1.5">
+        <li className="flex items-center gap-2 text-xs">
           <span
             className="inline-block rounded-full shrink-0"
             style={{
-              width: 18,
-              height: 18,
-              border: "2px solid #5B7C99",
-              background: "#5B7C9944",
+              width: 16,
+              height: 16,
+              border: "2px solid #1A1D1F",
+              background: "#1A1D1F33",
             }}
             aria-hidden
           />
-          <span>Filled: power size in megawatts (area proportional to MW)</span>
+          <span>Solid: megawatts published (area ∝ MW)</span>
         </li>
-        <li className="flex items-center gap-2">
+        <li className="flex items-center gap-2 text-xs">
           <span
             className="inline-block rounded-full shrink-0"
             style={{
-              width: 18,
-              height: 18,
-              border: "2px dashed #9A8B76",
+              width: 16,
+              height: 16,
+              border: "2px dashed #1A1D1F",
               background: "transparent",
             }}
             aria-hidden
           />
-          <span>Dashed: megawatts unknown; sized by site area instead</span>
+          <span>Dashed: megawatts unknown; sized by site area</span>
         </li>
       </ul>
+      <p className="m-0 mt-1.5 text-[0.65rem] text-[var(--muted)] leading-snug">
+        Grey demos are style only, not a status colour.
+      </p>
     </div>
   );
 }

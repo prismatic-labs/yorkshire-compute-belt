@@ -15,7 +15,7 @@ No status above `proposed` without a `planning_ref.url` that opens the live appl
 | Skelton Grange | `25/06139/FU` | **no lasting Public Access case URL** (Idox `keyVal` still missing; search form only) | point only | all null (undisclosed) | pending | n/a brownfield | Resolution-to-grant reported; status demoted until live case page |
 | Eggborough | unknown | null | point only | all null | pending | n/a | Held at proposed |
 | Drax | screening / full ref TBD | null | point only | phase_1 + max stated | pending | n/a | EIA screening contested (amber) |
-| Elsham Tech Park | `PA/2025/643` | [portal](https://apps.northlincs.gov.uk/application/pa-2025-643) | point only | 1 GW IT load from committee report | pending | **yes — grades 1–3a BMV** | Outline approval Mar 2026 |
+| Elsham Tech Park | `PA/2025/643` | [portal](https://apps.northlincs.gov.uk/application/pa-2025-643) | point only | 1 GW IT load from committee report | pending | **yes — grades 1–3a BMV** (sum 179.7 ha vs ~176 ha site — reconcile) | Minded to approve Mar 2026; portal shows **no decision issued** (2026-07-15) — held at `in_planning` |
 | Humber Tech Park | `PA/2024/584` | [portal](https://apps.northlincs.gov.uk/application/pa-2024-584) | point only | 386 MW (stated / reporting) | pending | confirm | Outline Aug 2024 |
 | Deep Green Bradford | unknown | null | point only | 5.6 MW stated | pending | n/a | News reports approval May 2026; demoted until portal URL |
 

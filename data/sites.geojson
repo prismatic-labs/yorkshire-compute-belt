@@ -277,13 +277,13 @@
         "id": "elsham",
         "name": "Elsham Tech Park",
         "operator": "Elsham Tech Park Ltd",
-        "status": "approved",
+        "status": "in_planning",
         "local_authority": "North Lincolnshire Council",
         "planning_ref": {
           "id": "PA/2025/643",
           "url": "https://apps.northlincs.gov.uk/application/pa-2025-643"
         },
-        "summary": "Outline approval for up to 1 gigawatt of computing equipment power across up to 15 data halls on about 435 acres of agricultural land, including a large share of best and most versatile farmland.",
+        "summary": "Outline application for up to 1 gigawatt of computing equipment power across up to 15 data halls on about 435 acres of agricultural land, including a large share of best and most versatile farmland. The planning committee was minded to approve in March 2026, but the council portal still records no decision issued (checked 2026-07-15); we list the site as in planning until the decision notice appears.",
         "power": {
           "grid_connection_mw": null,
           "it_load_mw": {
@@ -316,7 +316,7 @@
           },
           "previous_use": "Agricultural fields (former airfield landscape influences); adjacent Elsham Wolds Industrial Estate",
           "land_type": "agricultural",
-          "alc_grades": "Grade 1: 33.4 ha; Grade 2: 49.2 ha; Grade 3a: 59.9 ha; Grade 3b: 25.2 ha; non-agricultural: 12 ha (PA/2025/643 committee report)"
+          "alc_grades": "Grade 1: 33.4 ha; Grade 2: 49.2 ha; Grade 3a: 59.9 ha; Grade 3b: 25.2 ha; non-agricultural: 12 ha (PA/2025/643 committee report). Note: grades sum to 179.7 ha against a stated site of ~176 ha — reconcile against the committee report."
         },
         "grid_connection": {
           "summary": "On-site energy centre parameter up to ~49.9 MW; electricity substations and undergrounding of overhead lines listed in the outline description. Full grid-connection MW for the campus not itemised as a single figure in sources reviewed.",

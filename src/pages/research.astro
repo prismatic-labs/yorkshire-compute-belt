@@ -62,6 +62,46 @@ const checklist = [
     notes:
       "Bradford approval reported May 2026 (operator / BBC). Still listed as proposed until a live portal URL is linked.",
   },
+  {
+    site: "Mountpark Ferrybridge (data-centre plot)",
+    ref: "22/02485/HYB (wider site)",
+    url: "https://planning.wakefield.gov.uk/online-applications/applicationDetails.do?activeTab=summary&keyVal=RMF1XRQQ06E00",
+    urlLabel: "Wakefield portal",
+    urlNote: null,
+    power: "Not disclosed",
+    notes:
+      "About 40 acres (Zone A) reported for a data centre within the Ferrybridge coal-yard redevelopment. Linked consent is the wider Mountpark hybrid; megawatts, operator, and Zone A red-line still to confirm.",
+  },
+  {
+    site: "Wilton International (Phase 1)",
+    ref: "R/2026/0183/SC",
+    url: "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2026/0183/SC",
+    urlLabel: "Redcar portal (screening)",
+    urlNote: null,
+    power: "Up to 280 MW stated (Phase 1)",
+    notes:
+      "Sembcorp Energy UK / Digital Reef. Live portal page is EIA screening (EIA not required). Full-app Display R/2026/0183/FF redirects; stays proposed until a resolving full-application URL is linked. Page-level MW citations still needed.",
+  },
+  {
+    site: "Teesworks data centre campus",
+    ref: "R/2025/0382/ESM",
+    url: "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2025/0382/ESM",
+    urlLabel: "Redcar portal",
+    urlNote: null,
+    power: "Not disclosed",
+    notes:
+      "Reserved matters approved Aug 2025, extending over ~462,419 m² (≈115 acres; site extent as reported, not floorspace). Megawatts still missing in materials reviewed. BP withdrew the competing H2Teesside scheme in Dec 2025.",
+  },
+  {
+    site: "Latos Preston Farm (Stockton)",
+    ref: "Unknown",
+    url: null,
+    urlLabel: null,
+    urlNote: "No live URL yet",
+    power: "Up to 9.5 MW IT stated",
+    notes:
+      "Operator and local press reported Stockton approval Sep 2025 (Westland Way / Preston Farm). Same bar as Deep Green: stays proposed until a live Public Access URL is linked.",
+  },
 ];
 
 const leedsLetter = `[Your name]
@@ -135,12 +175,13 @@ Yours faithfully,
 
 <BaseLayout
   title="Research"
-  description="Verification gaps and sample information-request letters for documenting the physical footprint of data centres across Yorkshire and the Humber."
+  description="Verification gaps and sample information-request letters for documenting the physical footprint of data centres across Yorkshire, the Humber, and Teesside."
 >
   <h1 class="font-display text-3xl m-0 tracking-tight">Research</h1>
   <p class="text-[var(--muted)] mt-2 max-w-2xl">
     Closing these gaps is how the map gets closer to the real physical footprint: power, land, water, and
     live planning evidence. Figures stay provisional until the items below are filled.
+    This list is not yet a full regional census.
     How we use evidence is on <a href={`${base}/methodology`}>Methodology</a>.
   </p>
 
@@ -186,14 +227,41 @@ Yours faithfully,
     </div>
   </section>
 
+  <section class="mt-12" id="not-yet-mapped">
+    <h2 class="font-display text-xl m-0">Not yet on the map</h2>
+    <ul class="mt-3 max-w-2xl space-y-2">
+      <li>
+        Conesby / Scunthorpe campus ideas on the Humber side: only once a live planning page and stated size exist.
+      </li>
+      <li>
+        Older smaller Tees Valley consents (for example a reported ~48 MW former chemicals-plant campus) if still
+        live and distinct from Wilton / Teesworks / Latos.
+      </li>
+      <li>
+        Further large campus proposals as they appear with a live planning page and a stated size.
+      </li>
+      <li>
+        Existing smaller rented server halls and city hosting rooms (often no public megawatt figure).
+        Those need a separate inventory; they should not be mixed with the large campus dossiers without clear labelling.
+      </li>
+    </ul>
+  </section>
+
   <section class="mt-12" id="outstanding">
     <h2 class="font-display text-xl m-0">Outstanding before we treat figures as fully checked</h2>
     <ol class="mt-3 max-w-2xl space-y-2">
       <li>Save an archived copy of every source link when we add it.</li>
-      <li>Find lasting council planning pages for Skelton, Deep Green, Drax, and Eggborough, then update statuses where that allows.</li>
+      <li>Find lasting council planning pages for Skelton, Deep Green, Drax, Eggborough, and Latos Preston Farm, then update statuses where that allows.</li>
       <li>Cite exact pages inside planning PDFs, not only committee-report summaries.</li>
       <li>Check map pins against the official site-boundary drawings in each application.</li>
       <li>Confirm Humber acreage and megawatts against PA/2024/584 documents, not press alone.</li>
+      <li>
+        Ferrybridge: confirm the Zone A boundary, who the data-centre operator is, and whether a separate
+        application states megawatts (the linked consent is the wider Mountpark hybrid).
+      </li>
+      <li>
+        Teesside: page-level megawatt citations for Wilton Phase 1; find a stated MW figure for Teesworks if one exists in the application pack; find a lasting Stockton Public Access URL for Latos Preston Farm.
+      </li>
     </ol>
   </section>
 

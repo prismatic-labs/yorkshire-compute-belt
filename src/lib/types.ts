@@ -11,6 +11,8 @@ export type SiteStatus =
 
 export type LandType = "brownfield" | "agricultural" | "industrial_active";
 
+export type Corridor = "yorkshire" | "humber" | "teesside";
+
 export type ClaimStatus = "unverified" | "no_public_data" | "no_longer_stated";
 
 export type PowerKind =
@@ -88,6 +90,7 @@ export interface SiteProperties {
   operator: string;
   status: SiteStatus;
   local_authority: string;
+  corridor: Corridor;
   planning_ref: PlanningRef;
   power: PowerBlock;
   water_litres_pa: Quantity | null;

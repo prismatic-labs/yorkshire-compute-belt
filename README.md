@@ -1,6 +1,6 @@
 # The Yorkshire Compute Belt
 
-A public, open-source map of the physical footprint of AI and cloud infrastructure across Yorkshire and the Humber: data centres, power, land, and water, with sourced figures assembled in one place.
+A public, open-source map of the physical footprint of AI and cloud infrastructure across Yorkshire, the Humber, and Teesside: data centres, power, land, and water, with sourced figures assembled in one place.
 
 **Site name (fixed):** The Yorkshire Compute Belt  
 **Sub-brand (PNG export / social only):** God's Own Compute  
@@ -14,7 +14,7 @@ Disclosed, not neutral: make the physical and environmental cost of the regional
 ## v0
 
 1. Map homepage (MapLibre)
-2. Six dossiers (seed → §3 verification; see `RESEARCH.md`)
+2. Site dossiers (seed → §3 verification; see `RESEARCH.md`)
 3. `src/lib/units.ts` (capacity / load / energy discipline)
 4. Methodology page
 5. Compare view + PNG export

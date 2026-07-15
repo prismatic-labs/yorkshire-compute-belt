@@ -3,11 +3,11 @@
   "site_name": "The Yorkshire Compute Belt",
   "sub_brand": "God's Own Compute",
   "region": {
-    "id": "yorkshire-humber",
-    "label": "Yorkshire & the Humber",
+    "id": "yorkshire-humber-teesside",
+    "label": "Yorkshire, the Humber & Teesside",
     "map": {
-      "center": [-1.0, 53.75],
-      "zoom": 8.5,
+      "center": [-1.1, 54.05],
+      "zoom": 7.6,
       "coord_order": "GeoJSON [lng, lat]"
     }
   },

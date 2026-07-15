@@ -65,6 +65,7 @@
         "operator",
         "status",
         "local_authority",
+        "corridor",
         "planning_ref",
         "power",
         "land",
@@ -88,6 +89,10 @@
           ]
         },
         "local_authority": { "type": "string" },
+        "corridor": {
+          "enum": ["yorkshire", "humber", "teesside"],
+          "description": "Map filter group: Yorkshire, the Humber, or Teesside."
+        },
         "planning_ref": {
           "type": "object",
           "required": ["id", "url"],

@@ -7,7 +7,10 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-1.496, 53.772]
+        "coordinates": [
+          -1.496,
+          53.772
+        ]
       },
       "properties": {
         "id": "skelton-grange",
@@ -15,6 +18,7 @@
         "operator": "Microsoft",
         "status": "proposed",
         "local_authority": "Leeds City Council",
+        "corridor": "yorkshire",
         "planning_ref": {
           "id": "25/06139/FU",
           "url": null
@@ -111,7 +115,10 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-1.126, 53.705]
+        "coordinates": [
+          -1.126,
+          53.705
+        ]
       },
       "properties": {
         "id": "eggborough",
@@ -119,6 +126,7 @@
         "operator": "Microsoft",
         "status": "proposed",
         "local_authority": "North Yorkshire Council",
+        "corridor": "yorkshire",
         "planning_ref": {
           "id": null,
           "url": null
@@ -163,7 +171,10 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-0.995, 53.736]
+        "coordinates": [
+          -0.995,
+          53.736
+        ]
       },
       "properties": {
         "id": "drax",
@@ -171,6 +182,7 @@
         "operator": "Drax",
         "status": "proposed",
         "local_authority": "North Yorkshire Council",
+        "corridor": "yorkshire",
         "planning_ref": {
           "id": null,
           "url": null
@@ -271,7 +283,10 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-0.445, 53.604]
+        "coordinates": [
+          -0.445,
+          53.604
+        ]
       },
       "properties": {
         "id": "elsham",
@@ -279,6 +294,7 @@
         "operator": "Elsham Tech Park Ltd",
         "status": "in_planning",
         "local_authority": "North Lincolnshire Council",
+        "corridor": "humber",
         "planning_ref": {
           "id": "PA/2025/643",
           "url": "https://apps.northlincs.gov.uk/application/pa-2025-643"
@@ -390,7 +406,10 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-0.255, 53.643]
+        "coordinates": [
+          -0.255,
+          53.643
+        ]
       },
       "properties": {
         "id": "humber-tech-park",
@@ -398,6 +417,7 @@
         "operator": "Humber Tech Park Ltd",
         "status": "approved",
         "local_authority": "North Lincolnshire Council",
+        "corridor": "humber",
         "planning_ref": {
           "id": "PA/2024/584",
           "url": "https://apps.northlincs.gov.uk/application/pa-2024-584"
@@ -482,7 +502,10 @@
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [-1.777, 53.793]
+        "coordinates": [
+          -1.777,
+          53.793
+        ]
       },
       "properties": {
         "id": "deep-green-bradford",
@@ -490,6 +513,7 @@
         "operator": "Deep Green",
         "status": "proposed",
         "local_authority": "City of Bradford Metropolitan District Council",
+        "corridor": "yorkshire",
         "planning_ref": {
           "id": null,
           "url": null
@@ -585,6 +609,397 @@
           {
             "label": "BBC — Bradford heat-reuse approval",
             "url": "https://www.bbc.co.uk/news/articles/cd7p21599zgo",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.281,
+          53.715
+        ]
+      },
+      "properties": {
+        "id": "ferrybridge",
+        "name": "Mountpark Ferrybridge (data-centre plot)",
+        "operator": "Undisclosed (Mountpark / Affinius land)",
+        "status": "proposed",
+        "local_authority": "Wakefield Council",
+        "corridor": "yorkshire",
+        "planning_ref": {
+          "id": "22/02485/HYB",
+          "url": "https://planning.wakefield.gov.uk/online-applications/applicationDetails.do?activeTab=summary&keyVal=RMF1XRQQ06E00"
+        },
+        "summary": "About 40 acres within the former Ferrybridge C coal-yard redevelopment (Mountpark Ferrybridge), reported sold or reserved for a data centre (Zone A in trade press). The live Wakefield consent linked here is the wider hybrid employment permission for the 110-acre site (decided / approved); a dedicated data-centre size in megawatts and a red-line for Zone A alone are not yet confirmed in materials reviewed. We list the plot as proposed until those are sourced.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": null,
+          "max_proposed_mw": null
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": {
+            "value": 40,
+            "unit": "acres",
+            "basis": "stated",
+            "source": "Mountpark / trade reporting of about 40 acres disposed or allocated to a data-centre developer within Mountpark Ferrybridge",
+            "page": null,
+            "archived": null
+          },
+          "previous_use": "Former Ferrybridge C power station coal stock yard (brownfield)",
+          "land_type": "brownfield",
+          "alc_grades": null
+        },
+        "grid_connection": null,
+        "cooling": null,
+        "claims_on_record": [],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2024-08",
+            "event": "Wakefield hybrid consent for Mountpark Ferrybridge enabling works and outline employment floorspace (22/02485/HYB) reported decided / approved",
+            "source": "https://planning.wakefield.gov.uk/online-applications/applicationDetails.do?activeTab=summary&keyVal=RMF1XRQQ06E00"
+          },
+          {
+            "date": "2025",
+            "event": "Trade press: Zone A / about 40 acres taken forward or sold for a data centre within the Ferrybridge masterplan",
+            "source": "https://www.placeyorkshire.co.uk/mountpark-ramps-up-ferrybridge-intentions/"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "Wakefield planning portal: 22/02485/HYB (Mountpark Ferrybridge hybrid)",
+            "url": "https://planning.wakefield.gov.uk/online-applications/applicationDetails.do?activeTab=summary&keyVal=RMF1XRQQ06E00",
+            "archived": "https://web.archive.org/web/20260715065816/https://planning.wakefield.gov.uk/online-applications/applicationDetails.do?activeTab=summary&keyVal=RMF1XRQQ06E00",
+            "note": "Portal serves an incomplete TLS certificate chain (fails strict clients); archived snapshot taken 2026-07-15"
+          },
+          {
+            "label": "Place Yorkshire: Mountpark Ferrybridge / Zone A data centre",
+            "url": "https://www.placeyorkshire.co.uk/mountpark-ramps-up-ferrybridge-intentions/",
+            "archived": null
+          },
+          {
+            "label": "BE News: about 40 acres to a data-centre developer",
+            "url": "https://benews.co.uk/mountpark-secures-planning-for-640000-sq-ft-ferrybridge-unit/",
+            "archived": null
+          },
+          {
+            "label": "Mountpark: Ferrybridge consent announcement",
+            "url": "https://mountpark.com/news/green-light-for-ferrybridge-power-station-site/",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.145,
+          54.575
+        ]
+      },
+      "properties": {
+        "id": "wilton-international",
+        "name": "Wilton International data centre (Phase 1)",
+        "operator": "Sembcorp Energy UK / Digital Reef",
+        "status": "proposed",
+        "local_authority": "Redcar and Cleveland Borough Council",
+        "corridor": "teesside",
+        "planning_ref": {
+          "id": "R/2026/0183/SC",
+          "url": "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2026/0183/SC"
+        },
+        "summary": "Phase 1 campus of up to three air-cooled data halls at Wilton International industrial park, Teesside. Joint development by Sembcorp Energy UK and Digital Reef. Public materials state up to 280 megawatts. Live Redcar portal page is EIA screening R/2026/0183/SC (decision: EIA not required, Apr 2026). Trade press reports a full planning application and May 2026 consultation, but Display R/2026/0183/FF currently redirects to the portal home, so status stays proposed until a resolving full-application URL is linked.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": {
+            "value": 280,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Sembcorp Energy UK / Digital Reef Phase 1 announcement and related reporting for Wilton International (up to 280 MW)",
+            "page": null,
+            "archived": null
+          },
+          "max_proposed_mw": {
+            "value": 280,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Sembcorp Energy UK / Digital Reef Phase 1 Wilton International stated capacity (up to 280 MW); later phases not yet documented here",
+            "page": null,
+            "archived": null
+          }
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": {
+            "value": 38,
+            "unit": "acres",
+            "basis": "planning_doc",
+            "source": "DCD / planning materials: about 154,553 m² land parcel (≈38 acres) for three data-centre buildings",
+            "page": null,
+            "archived": null
+          },
+          "previous_use": "Wilton International industrial park (brownfield / industrial)",
+          "land_type": "industrial_active",
+          "alc_grades": null
+        },
+        "grid_connection": {
+          "summary": "Press and applicant materials cite existing large grid / private-wire capacity at Wilton and Greystones Substation supply for Phase 1. A single campus grid-connection megawatt figure beyond the 280 MW scheme size is not itemised in sources reviewed.",
+          "new_substation": null,
+          "overhead_line_upgrades": null,
+          "basis": "stated",
+          "source": "Sembcorp / Digital Reef / Place North East reporting on Wilton Phase 1"
+        },
+        "cooling": {
+          "claim": "Air-cooled campus stated in application materials reported by the trade press",
+          "basis": "stated",
+          "source": "DCD reporting of application documents for Wilton International data centre"
+        },
+        "claims_on_record": [],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2025-07",
+            "event": "Sembcorp reported acquiring the Wilton land parcel (trade press)",
+            "source": "https://www.datacenterdynamics.com/en/news/singapores-sembcorp-submits-planning-application-for-280mw-data-center-in-teesside-uk/"
+          },
+          {
+            "date": "2026-04-01",
+            "event": "EIA screening opinion: EIA not required for Wilton data centre / ancillary infrastructure (R/2026/0183/SC)",
+            "source": "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2026/0183/SC"
+          },
+          {
+            "date": "2026-05",
+            "event": "Sembcorp / Digital Reef announce Phase 1 (up to 280 MW) and state a planning application / consultation is underway (portal full-app Display URL not yet resolving)",
+            "source": "https://www.datacenterdynamics.com/en/news/singapores-sembcorp-submits-planning-application-for-280mw-data-center-in-teesside-uk/"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "Redcar and Cleveland planning: R/2026/0183/SC (EIA screening)",
+            "url": "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2026/0183/SC",
+            "archived": null
+          },
+          {
+            "label": "DCD: Sembcorp 280 MW Wilton application",
+            "url": "https://www.datacenterdynamics.com/en/news/singapores-sembcorp-submits-planning-application-for-280mw-data-center-in-teesside-uk/",
+            "archived": null
+          },
+          {
+            "label": "Place North East: Sembcorp / Digital Reef Wilton plans",
+            "url": "https://www.placenortheast.co.uk/sembcorp-submits-plans-for-1m-sq-ft-teesside-data-centre/",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.145,
+          54.61
+        ]
+      },
+      "properties": {
+        "id": "teesworks",
+        "name": "Teesworks data centre campus",
+        "operator": "Teesworks Limited / South Tees Group",
+        "status": "approved",
+        "local_authority": "Redcar and Cleveland Borough Council",
+        "corridor": "teesside",
+        "planning_ref": {
+          "id": "R/2025/0382/ESM",
+          "url": "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2025/0382/ESM"
+        },
+        "summary": "Reserved-matters approval (August 2025) for a data-centre campus extending over about 462,419 m² (≈115 acres — the site extent as reported, not a floorspace figure) on the former Redcar sinter plant / Foundry land within Teesworks, pursuant to outline permission R/2020/0821/ESM. Megawatt capacity is not disclosed in the officer report reviewed so far. The scheme competed for land with BP’s H2Teesside hydrogen proposal; BP formally withdrew H2Teesside in December 2025.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": null,
+          "max_proposed_mw": null
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": {
+            "value": 115,
+            "unit": "acres",
+            "basis": "stated",
+            "source": "BBC and related reporting of about 115 acres (46 ha) for the Teesworks data-centre plot; confirm against reserved-matters red-line",
+            "page": null,
+            "archived": null
+          },
+          "previous_use": "Former Redcar sinter plant / Teesworks Foundry outline site (ex-steelworks)",
+          "land_type": "brownfield",
+          "alc_grades": null
+        },
+        "grid_connection": {
+          "summary": "Substation and battery stores listed in the reserved-matters description. A campus megawatt figure is not stated in the officer report reviewed; consultees noted power requirements may need fuller assessment.",
+          "new_substation": true,
+          "overhead_line_upgrades": null,
+          "basis": "planning_doc",
+          "source": "Redcar and Cleveland officer report R/2025/0382/ESM"
+        },
+        "cooling": null,
+        "claims_on_record": [
+          {
+            "claim": "Discussions with a prospective occupier; data centre framed as critical national infrastructure in STG representations",
+            "made_by": "South Tees Group / Teesworks (reported)",
+            "date": "2025-06",
+            "deadline": null,
+            "status": "unverified",
+            "source": "https://www.bbc.co.uk/news/articles/cn43x9042kwo",
+            "archived": null
+          }
+        ],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2022-03",
+            "event": "Outline permission R/2020/0821/ESM for Foundry B2/B8/E floorspace",
+            "source": "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2025/0382/ESM"
+          },
+          {
+            "date": "2025-02",
+            "event": "Reserved matters for access road / security cabin approved (R/2024/0820/ESM)",
+            "source": "https://www.gazettelive.co.uk/news/teesside-news/permission-granted-massive-teesworks-data-32199463"
+          },
+          {
+            "date": "2025-08-01",
+            "event": "Reserved matters approved for data-centre campus R/2025/0382/ESM (appearance, landscaping, layout, access, scale)",
+            "source": "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2025/0382/ESM"
+          },
+          {
+            "date": "2025-12",
+            "event": "BP formally withdraws the H2Teesside development consent order bid, citing material changes at Teesworks; ends the land conflict with the data-centre scheme",
+            "source": "https://www.gazettelive.co.uk/news/teesside-news/bp-teesside-hydrogen-data-centre-32980567"
+          }
+        ],
+        "controversies": [
+          {
+            "summary": "Land conflict with BP H2Teesside hydrogen DCO proposals on overlapping Teesworks land; both framed as nationally significant. Resolved December 2025 when BP formally withdrew H2Teesside",
+            "source": "https://www.bbc.co.uk/news/articles/cn43x9042kwo",
+            "label": "reporting"
+          }
+        ],
+        "sources": [
+          {
+            "label": "Redcar and Cleveland planning: R/2025/0382/ESM",
+            "url": "https://planning.redcar-cleveland.gov.uk/Planning/Display/R/2025/0382/ESM",
+            "archived": null
+          },
+          {
+            "label": "Gazette Live: reserved matters granted amid BP objection",
+            "url": "https://www.gazettelive.co.uk/news/teesside-news/permission-granted-massive-teesworks-data-32199463",
+            "archived": null
+          },
+          {
+            "label": "BBC: Teesworks data centre vs H2Teesside",
+            "url": "https://www.bbc.co.uk/news/articles/cn43x9042kwo",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.33,
+          54.55
+        ]
+      },
+      "properties": {
+        "id": "latos-preston-farm",
+        "name": "Latos Preston Farm (Stockton)",
+        "operator": "Latos Data Centres",
+        "status": "proposed",
+        "local_authority": "Stockton-on-Tees Borough Council",
+        "corridor": "teesside",
+        "planning_ref": {
+          "id": null,
+          "url": null
+        },
+        "summary": "Neural-edge AI data centre of about 9.5 MW IT capacity at Preston Farm Industrial Estate (near Westland Way), Stockton-on-Tees. Operator and local press reported full planning approval in September 2025 for two data halls (~1,750 m²) aiming to open early 2027. Listed as proposed until a live Stockton Public Access case page can be linked.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": {
+            "value": 9.5,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Latos: up to 9.5 MW IT capacity at Preston Farm neural-edge facility",
+            "page": null,
+            "archived": null
+          },
+          "phase_1_mw": null,
+          "max_proposed_mw": {
+            "value": 9.5,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Latos materials describing Stockton Preston Farm IT capacity (up to 9.5 MW)",
+            "page": null,
+            "archived": null
+          }
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": null,
+          "previous_use": "Preston Farm Industrial Estate (Westland Way area, Stockton / Thornaby)",
+          "land_type": "industrial_active",
+          "alc_grades": null
+        },
+        "grid_connection": null,
+        "cooling": null,
+        "claims_on_record": [],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2025-06",
+            "event": "Planning application for Preston Farm neural-edge data centre reported filed (exact Stockton ref still to confirm)",
+            "source": "https://www.datacenterdynamics.com/en/news/latos-gets-planning-approval-for-edge-ai-data-center-near-middlesbrough-uk/"
+          },
+          {
+            "date": "2025-09",
+            "event": "Operator and local press: Stockton Council grants full planning approval; construction aimed later 2025 / operations early 2027 (live portal URL still missing)",
+            "source": "https://www.latosdc.co.uk/news/latos-announces-100m-ai-data-centre-in-stockton-on-tees/"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "Latos: Stockton approval announcement",
+            "url": "https://www.latosdc.co.uk/news/latos-announces-100m-ai-data-centre-in-stockton-on-tees/",
+            "archived": null
+          },
+          {
+            "label": "Latos: Built for the AI Edge (9.5 MW IT capacity)",
+            "url": "https://www.latosdc.co.uk/news/built-for-the-ai-edge/",
+            "archived": null
+          },
+          {
+            "label": "Teesside Live: £100m Stockton data centre approved",
+            "url": "https://www.gazettelive.co.uk/news/teesside-news/stockton-latos-data-centre-jobs-32536147",
+            "archived": null
+          },
+          {
+            "label": "DCD: Latos Edge AI approval near Middlesbrough",
+            "url": "https://www.datacenterdynamics.com/en/news/latos-gets-planning-approval-for-edge-ai-data-center-near-middlesbrough-uk/",
             "archived": null
           }
         ],

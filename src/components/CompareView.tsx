@@ -78,7 +78,7 @@ export default function CompareView({ sites, baseUrl, siteUrl }: Props) {
     ctx.font = "400 20px Source Sans 3, sans-serif";
     ctx.fillStyle = "#5C636A";
     ctx.fillText(
-      "Physical power footprint of data centres across Yorkshire and the Humber",
+      "Physical power footprint of data centres across Yorkshire, the Humber, and Teesside",
       48,
       98,
     );

@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
-import type { SiteFeature } from "../lib/types";
+import type { Corridor, SiteFeature } from "../lib/types";
 import { circleScale, mapRadiusMetres, statusColour } from "../lib/mapScale";
 import { formatNumber, powerKindLabel, bestPower } from "../lib/units";
 
@@ -11,10 +11,50 @@ interface Props {
   zoom: number;
 }
 
+const CORRIDORS: Array<{ id: Corridor; label: string }> = [
+  { id: "yorkshire", label: "Yorkshire" },
+  { id: "humber", label: "The Humber" },
+  { id: "teesside", label: "Teesside" },
+];
+
+/** Geographic framing extents [SW, NE] so zoom isn't pinned to the tight site cluster. */
+const CORRIDOR_BOUNDS: Record<Corridor, [[number, number], [number, number]]> = {
+  // Historic / ceremonial Yorkshire: Sheffield south to North York Moors / coast fringe
+  yorkshire: [
+    [-2.15, 53.35],
+    [-0.5, 54.5],
+  ],
+  humber: [
+    [-0.9, 53.45],
+    [0.2, 53.85],
+  ],
+  teesside: [
+    [-1.45, 54.48],
+    [-0.95, 54.72],
+  ],
+};
+
+type CorridorVisibility = Record<Corridor, boolean>;
+type ZoomFocus = "all" | Corridor;
+
+const ALL_VISIBLE: CorridorVisibility = {
+  yorkshire: true,
+  humber: true,
+  teesside: true,
+};
+
 export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
+  const markersRef = useRef<
+    Map<string, { marker: maplibregl.Marker; corridor: Corridor }>
+  >(new Map());
   const [selected, setSelected] = useState<SiteFeature | null>(null);
+  const [visibleCorridors, setVisibleCorridors] =
+    useState<CorridorVisibility>(ALL_VISIBLE);
+  const [zoomFocus, setZoomFocus] = useState<ZoomFocus>("all");
+  const visibleCorridorsRef = useRef(visibleCorridors);
+  visibleCorridorsRef.current = visibleCorridors;
   const panelId = useId();
 
   useEffect(() => {
@@ -41,6 +81,7 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
         el.type = "button";
         el.className = "ycb-marker";
         el.setAttribute("aria-label", site.properties.name);
+        el.dataset.corridor = site.properties.corridor;
         const r = Math.max(14, mapRadiusMetres(scale) / 280);
         const colour = statusColour(site.properties.status);
         const dashed = scale.mode !== "power";
@@ -52,24 +93,76 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
         el.style.background = dashed ? `${colour}28` : `${colour}33`;
         el.style.cursor = "pointer";
         el.style.padding = "0";
+        const show = visibleCorridorsRef.current[site.properties.corridor];
+        el.style.display = show ? "" : "none";
+        el.disabled = !show;
         el.addEventListener("click", (e) => {
           e.stopPropagation();
           setSelected(site);
         });
-        new maplibregl.Marker({ element: el, anchor: "center" })
+        const marker = new maplibregl.Marker({ element: el, anchor: "center" })
           .setLngLat([lng, lat])
           .addTo(map);
+        markersRef.current.set(site.properties.id, {
+          marker,
+          corridor: site.properties.corridor,
+        });
       }
     });
 
     return () => {
+      markersRef.current.clear();
       map.remove();
       mapRef.current = null;
     };
   }, [sites, center, zoom]);
 
+  useEffect(() => {
+    for (const { marker, corridor } of markersRef.current.values()) {
+      const el = marker.getElement();
+      el.style.display = visibleCorridors[corridor] ? "" : "none";
+      el.disabled = !visibleCorridors[corridor];
+    }
+    if (selected && !visibleCorridors[selected.properties.corridor]) {
+      setSelected(null);
+    }
+  }, [visibleCorridors, selected]);
+
   const best = selected ? bestPower(selected.properties.power) : null;
   const scale = selected ? circleScale(selected.properties) : null;
+
+  function toggleCorridorDisplay(id: Corridor) {
+    setVisibleCorridors((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      // Keep at least one corridor on so the map never goes blank by accident.
+      if (!Object.values(next).some(Boolean)) return prev;
+      return next;
+    });
+  }
+
+  function flyToFocus(id: ZoomFocus) {
+    const map = mapRef.current;
+    if (!map) return;
+    setZoomFocus(id);
+
+    if (id === "all") {
+      map.flyTo({ center, zoom, essential: true });
+      return;
+    }
+
+    const [sw, ne] = CORRIDOR_BOUNDS[id];
+    const bounds = new maplibregl.LngLatBounds(sw, ne);
+    // Still include any sites slightly outside the geographic frame.
+    for (const site of sites.filter((s) => s.properties.corridor === id)) {
+      bounds.extend(site.geometry.coordinates as [number, number]);
+    }
+    map.fitBounds(bounds, {
+      padding: { top: 72, bottom: 48, left: 36, right: 36 },
+      maxZoom: 9.2,
+      duration: 900,
+      essential: true,
+    });
+  }
 
   return (
     <div
@@ -90,7 +183,8 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
             The Yorkshire Compute Belt
           </a>
           <p className="m-0 text-[0.75rem] text-[var(--ink)] font-display tracking-tight leading-snug">
-            AI and cloud leave a physical footprint: power, land, and water. This map puts Yorkshire and the Humber data centres, and those figures, where communities can see them.
+            AI and cloud leave a physical footprint: power, land, and water. This map puts data centres
+            across Yorkshire, the Humber, and Teesside, and those figures, where communities can see them.
           </p>
           <nav className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[0.75rem]" aria-label="Site">
             <a href={`${baseUrl}/sites`} className="text-[var(--ink)]/75 no-underline hover:text-[var(--ink)]">Sites</a>
@@ -98,6 +192,71 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
             <a href={`${baseUrl}/research`} className="text-[var(--ink)]/75 no-underline hover:text-[var(--ink)]">Research</a>
             <a href={`${baseUrl}/methodology`} className="text-[var(--ink)]/75 no-underline hover:text-[var(--ink)]">Methodology</a>
           </nav>
+
+          <div className="mt-2 border-t border-[var(--line)] pt-2">
+            <p className="m-0 mb-1.5 text-[0.65rem] uppercase tracking-wider text-[var(--muted)]">
+              Display
+            </p>
+            <div
+              className="flex flex-wrap gap-1.5"
+              role="group"
+              aria-label="Show or hide sites by area"
+            >
+              {CORRIDORS.map(({ id, label }) => {
+                const on = visibleCorridors[id];
+                return (
+                  <button
+                    key={`display-${id}`}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => toggleCorridorDisplay(id)}
+                    className="rounded border px-2 py-1 text-[0.7rem] leading-none cursor-pointer transition-colors"
+                    style={{
+                      borderColor: on ? "var(--ink)" : "var(--line)",
+                      background: on ? "var(--ink)" : "transparent",
+                      color: on ? "var(--paper)" : "var(--muted)",
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="m-0 mt-2.5 mb-1.5 text-[0.65rem] uppercase tracking-wider text-[var(--muted)]">
+              Zoom
+            </p>
+            <div
+              className="flex flex-wrap gap-1.5"
+              role="group"
+              aria-label="Zoom map to an area"
+            >
+              {(
+                [
+                  { id: "all" as const, label: "All" },
+                  ...CORRIDORS,
+                ] as Array<{ id: ZoomFocus; label: string }>
+              ).map(({ id, label }) => {
+                const on = zoomFocus === id;
+                return (
+                  <button
+                    key={`zoom-${id}`}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => flyToFocus(id)}
+                    className="rounded border px-2 py-1 text-[0.7rem] leading-none cursor-pointer transition-colors"
+                    style={{
+                      borderColor: on ? "var(--ink)" : "var(--line)",
+                      background: "transparent",
+                      color: on ? "var(--ink)" : "var(--muted)",
+                      boxShadow: on ? "inset 0 0 0 1px var(--ink)" : "none",
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 

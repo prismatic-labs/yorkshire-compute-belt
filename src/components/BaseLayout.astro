@@ -1,0 +1,94 @@
+---
+import "../styles/global.css";
+import BrandLink from "./BrandLink.astro";
+import { correctionsMailto } from "../lib/contact";
+import { getConfig, medianStalenessDays } from "../lib/sites";
+
+interface Props {
+  title?: string;
+  description?: string;
+  fullBleed?: boolean;
+}
+
+const config = getConfig();
+const {
+  title = config.site_name,
+  description = "A public map of the physical footprint of AI and cloud infrastructure across Yorkshire and the Humber: data centres, power, land, and water figures, sourced and comparable.",
+  fullBleed = false,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const pageTitle = title === config.site_name ? title : `${title} · ${config.site_name}`;
+const staleness = medianStalenessDays();
+const staleBanner = staleness > config.staleness_banner_days;
+const correctionsHref = correctionsMailto();
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={config.site_name} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    {staleBanner && (
+      <div class="contested text-sm text-center" role="status">
+        Some figures have not been rechecked for about {Math.round(staleness)} days
+        (we aim to keep reviews within {config.staleness_banner_days} days).
+        They may be out of date; see <a href={`${base}/methodology#updates`}>how fresh the figures are</a>.
+      </div>
+    )}
+
+    {!fullBleed && (
+      <header class="border-b border-[var(--line)] bg-[var(--paper)]/90 backdrop-blur-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+          <a href={`${base}/`} class="wordmark">{config.site_name}</a>
+          <nav aria-label="Site">
+            <ul class="flex flex-wrap gap-4 text-sm list-none m-0 p-0 text-[var(--muted)]">
+              <li><a class="text-inherit no-underline hover:text-[var(--ink)]" href={`${base}/sites`}>Sites</a></li>
+              <li><a class="text-inherit no-underline hover:text-[var(--ink)]" href={`${base}/compare`}>Compare</a></li>
+              <li><a class="text-inherit no-underline hover:text-[var(--ink)]" href={`${base}/research`}>Research</a></li>
+              <li><a class="text-inherit no-underline hover:text-[var(--ink)]" href={`${base}/methodology`}>Methodology</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+    )}
+
+    <main class={fullBleed ? "" : "max-w-5xl mx-auto px-4 py-8"}>
+      <slot />
+    </main>
+
+    {!fullBleed && (
+      <footer class="border-t border-[var(--line)] mt-16 py-8 text-sm text-[var(--muted)]">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="m-0">
+              <span class="wordmark text-[var(--muted)]">{config.site_name}</span>
+            </p>
+            <p class="m-0 mt-2">
+              Corrections: <a href={correctionsHref}>{config.contact.corrections_email}</a>.
+              Opens with subject “Yorkshire Compute Belt: correction”.
+              Or use <a href={config.contact.github_issues}>GitHub issues</a>.
+            </p>
+            <p class="m-0 mt-1">
+              <a href={`${base}/research`}>Research</a>
+              · <a href={`${base}/methodology`}>Methodology</a>
+              · <a href={`${base}/methodology#right-of-reply`}>Right of reply</a>
+            </p>
+          </div>
+          <BrandLink />
+        </div>
+      </footer>
+    )}
+  </body>
+</html>

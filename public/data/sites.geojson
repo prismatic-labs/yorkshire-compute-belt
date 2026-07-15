@@ -1,0 +1,595 @@
+{
+  "$version": "0.1.0",
+  "type": "FeatureCollection",
+  "_comment": "Coordinates are GeoJSON-native [longitude, latitude]. Convert nowhere else. Seed figures follow the §3 research protocol; every quantity is null or {value, unit, basis, source}. Phase 0 verification notes: archive.org snapshots and some Idox keyVal deep-links still outstanding — see RESEARCH.md.",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.496, 53.772]
+      },
+      "properties": {
+        "id": "skelton-grange",
+        "name": "Microsoft Skelton Grange",
+        "operator": "Microsoft",
+        "status": "proposed",
+        "local_authority": "Leeds City Council",
+        "planning_ref": {
+          "id": "25/06139/FU",
+          "url": null
+        },
+        "summary": "Three data halls on the former Skelton Grange coal power station site at Stourton. Leeds Plans Panel resolved to grant application 25/06139/FU in April 2026 (reported in the press and by Harworth). We still list the site as proposed until we can link the live council planning page. Power draw is not disclosed in materials reviewed so far.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": null,
+          "max_proposed_mw": null
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": {
+            "value": 48,
+            "unit": "acres",
+            "basis": "stated",
+            "source": "Harworth Group RNS / related reporting on Plots 1–2 land transaction (≈27 + 21 acres); cross-check against red-line outstanding",
+            "page": null,
+            "archived": null
+          },
+          "previous_use": "Former 800 MW Skelton Grange coal power station site",
+          "land_type": "brownfield",
+          "alc_grades": null
+        },
+        "grid_connection": {
+          "summary": "Associated energy, power and water infrastructure included in the hybrid application description; megawatt figure not disclosed in sources reviewed so far.",
+          "new_substation": null,
+          "overhead_line_upgrades": null,
+          "basis": "planning_doc",
+          "source": "Leeds planning application 25/06139/FU description (hybrid data-centre campus)"
+        },
+        "cooling": {
+          "claim": "Outside-air cooling referenced in operator/promoter materials",
+          "basis": "stated",
+          "source": "Operator / promoter public materials (verbatim claim pending archive snapshot)"
+        },
+        "claims_on_record": [
+          {
+            "claim": "100% renewable energy in data centres",
+            "made_by": "Microsoft",
+            "date": null,
+            "deadline": "2030",
+            "status": "no_public_data",
+            "source": "Microsoft public sustainability commitments for data centres (site-specific evidence not published)",
+            "archived": null
+          },
+          {
+            "claim": "Diesel-free backup by 2030",
+            "made_by": "Microsoft",
+            "date": null,
+            "deadline": "2030",
+            "status": "no_public_data",
+            "source": "Microsoft public sustainability commitments (site-specific evidence not published)",
+            "archived": null
+          }
+        ],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2024-06",
+            "event": "Harworth completes Plot 1 sale to Microsoft (27 acres, £51.2m gross)",
+            "source": "https://harworthgroup.com/2026/04/27/harworth-and-microsoft-receive-resolution-to-grant-planning-consent-for-hyperscale-data-centre-and-il-space-at-skelton-grange-leeds/"
+          },
+          {
+            "date": "2026-04-24",
+            "event": "Leeds City Council Plans Panel resolution to grant hybrid application 25/06139/FU (unanimous), delegated subject to S106",
+            "source": "https://www.bbc.co.uk/news/articles/cjd8mdvd07po"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "Harworth resolution-to-grant announcement (ref 25/06139/FU)",
+            "url": "https://harworthgroup.com/2026/04/27/harworth-and-microsoft-receive-resolution-to-grant-planning-consent-for-hyperscale-data-centre-and-il-space-at-skelton-grange-leeds/",
+            "archived": null
+          },
+          {
+            "label": "BBC — Leeds unanimous approval report",
+            "url": "https://www.bbc.co.uk/news/articles/cjd8mdvd07po",
+            "archived": null
+          },
+          {
+            "label": "Leeds City Council planning search (locate 25/06139/FU)",
+            "url": "https://publicaccess.leeds.gov.uk/online-applications/search.do?action=simple&searchType=Application",
+            "archived": null,
+            "note": "Direct link to the live Leeds planning page still to be confirmed; verify documents and page numbers before treating acreage or power as planning-document basis"
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.126, 53.705]
+      },
+      "properties": {
+        "id": "eggborough",
+        "name": "Microsoft Eggborough",
+        "operator": "Microsoft",
+        "status": "proposed",
+        "local_authority": "North Yorkshire Council",
+        "planning_ref": {
+          "id": null,
+          "url": null
+        },
+        "summary": "Two-building campus proposed on part of the former Eggborough coal power station (closed 2018). No live planning application link recorded yet.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": null,
+          "max_proposed_mw": null
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": null,
+          "previous_use": "Former 1,960 MW Eggborough coal power station site (closed 2018)",
+          "land_type": "brownfield",
+          "alc_grades": null
+        },
+        "grid_connection": null,
+        "cooling": null,
+        "claims_on_record": [],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2024-02",
+            "event": "Microsoft hosts community events on proposals for a data centre on part of the former Eggborough Power Station site; mid-2024 planning submission aimed",
+            "source": "https://www.datacenterdynamics.com/en/news/microsoft-to-build-data-center-campus-on-former-power-station-site-in-north-yorkshire-uk/"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "DCD — Microsoft Eggborough campus proposal",
+            "url": "https://www.datacenterdynamics.com/en/news/microsoft-to-build-data-center-campus-on-former-power-station-site-in-north-yorkshire-uk/",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.995, 53.736]
+      },
+      "properties": {
+        "id": "drax",
+        "name": "Drax data centre",
+        "operator": "Drax",
+        "status": "proposed",
+        "local_authority": "North Yorkshire Council",
+        "planning_ref": {
+          "id": null,
+          "url": null
+        },
+        "summary": "Phase 1 floated under 100 MW on land at Drax Power Station; longer-term ambition to 1 GW. The “carbon-negative data centre” claim rests on unproven bioenergy with carbon capture and storage. Environmental impact assessment screening: the council ruled no full assessment required (contested).",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": {
+            "value": 100,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Drax Group public materials / trading updates describing a <100 MW first-phase data centre",
+            "page": null,
+            "archived": null
+          },
+          "max_proposed_mw": {
+            "value": 1000,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Drax Group stated ambition to expand capacity beyond 1 GW (longer-term; not a consented figure)",
+            "page": null,
+            "archived": null
+          }
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": null,
+          "previous_use": "Land at Drax Power Station used for storage / coal-era infrastructure",
+          "land_type": "industrial_active",
+          "alc_grades": null
+        },
+        "grid_connection": {
+          "summary": "Operator states phase 1 would use an existing grid connection previously used to support coal-powered generation.",
+          "new_substation": null,
+          "overhead_line_upgrades": null,
+          "basis": "stated",
+          "source": "https://www.drax.com/uk/what-we-do/ai-data-centres/"
+        },
+        "cooling": null,
+        "claims_on_record": [
+          {
+            "claim": "Opportunity to build the world’s first carbon-negative data centre by combining with BECCS",
+            "made_by": "Drax",
+            "date": null,
+            "deadline": null,
+            "status": "no_public_data",
+            "source": "https://www.drax.com/uk/what-we-do/ai-data-centres/",
+            "archived": null
+          }
+        ],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2025-12-11",
+            "event": "Drax tells investors it is preparing / has applied for planning for a ~100 MW data centre targeting operation by 2027",
+            "source": "https://www.theguardian.com/business/2025/dec/11/drax-plans-to-convert-part-of-its-north-yorkshire-power-plant-into-datacentre"
+          },
+          {
+            "date": "2026-01",
+            "event": "North Yorkshire Council rules environmental impact assessment not required (screening); contested by campaign groups",
+            "source": "https://www.thenorthernecho.co.uk/news/25733193.plans-submitted-data-centre-drax-power-station-selby/"
+          }
+        ],
+        "controversies": [
+          {
+            "summary": "North Yorkshire Council screening opinion: no environmental impact assessment required for the data-centre proposal; contested",
+            "source": "https://www.thenorthernecho.co.uk/news/25733193.plans-submitted-data-centre-drax-power-station-selby/",
+            "label": "procedural"
+          },
+          {
+            "summary": "Campaign open letter (reported May 2026) opposing the proposal (campaign source)",
+            "source": "Campaign reporting (link via dossier sources when archived)",
+            "label": "campaign"
+          }
+        ],
+        "sources": [
+          {
+            "label": "Drax — AI data centres page",
+            "url": "https://www.drax.com/uk/what-we-do/ai-data-centres/",
+            "archived": null
+          },
+          {
+            "label": "Guardian — Drax datacentre plans",
+            "url": "https://www.theguardian.com/business/2025/dec/11/drax-plans-to-convert-part-of-its-north-yorkshire-power-plant-into-datacentre",
+            "archived": null
+          },
+          {
+            "label": "Northern Echo: environmental impact assessment screening report",
+            "url": "https://www.thenorthernecho.co.uk/news/25733193.plans-submitted-data-centre-drax-power-station-selby/",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.445, 53.604]
+      },
+      "properties": {
+        "id": "elsham",
+        "name": "Elsham Tech Park",
+        "operator": "Elsham Tech Park Ltd",
+        "status": "approved",
+        "local_authority": "North Lincolnshire Council",
+        "planning_ref": {
+          "id": "PA/2025/643",
+          "url": "https://apps.northlincs.gov.uk/application/pa-2025-643"
+        },
+        "summary": "Outline approval for up to 1 gigawatt of computing equipment power across up to 15 data halls on about 435 acres of agricultural land, including a large share of best and most versatile farmland.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": {
+            "value": 1000,
+            "unit": "MW",
+            "basis": "planning_doc",
+            "source": "North Lincolnshire Council planning committee report PA/2025/643 — cumulative IT load parameter",
+            "page": "committee report parameters (§ Proposal)",
+            "archived": null
+          },
+          "phase_1_mw": null,
+          "max_proposed_mw": {
+            "value": 1000,
+            "unit": "MW",
+            "basis": "planning_doc",
+            "source": "North Lincolnshire Council planning committee report PA/2025/643",
+            "page": "committee report — up to 1 GW / 1,000 MW IT load",
+            "archived": null
+          }
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": {
+            "value": 435,
+            "unit": "acres",
+            "basis": "planning_doc",
+            "source": "PA/2025/643 committee report / BBC reporting of site area (~176 ha ≈ 435 acres)",
+            "page": "ALC section — site covers approximately 176 ha",
+            "archived": null
+          },
+          "previous_use": "Agricultural fields (former airfield landscape influences); adjacent Elsham Wolds Industrial Estate",
+          "land_type": "agricultural",
+          "alc_grades": "Grade 1: 33.4 ha; Grade 2: 49.2 ha; Grade 3a: 59.9 ha; Grade 3b: 25.2 ha; non-agricultural: 12 ha (PA/2025/643 committee report)"
+        },
+        "grid_connection": {
+          "summary": "On-site energy centre parameter up to ~49.9 MW; electricity substations and undergrounding of overhead lines listed in the outline description. Full grid-connection MW for the campus not itemised as a single figure in sources reviewed.",
+          "new_substation": true,
+          "overhead_line_upgrades": true,
+          "basis": "planning_doc",
+          "source": "PA/2025/643 outline description / committee report"
+        },
+        "cooling": null,
+        "claims_on_record": [
+          {
+            "claim": "Up to £10bn private investment during the project's lifetime",
+            "made_by": "Elsham Tech Park Ltd / council reporting",
+            "date": "2026-03",
+            "deadline": null,
+            "status": "unverified",
+            "source": "https://www.bbc.co.uk/news/articles/c5y63pl88m5o",
+            "archived": null
+          },
+          {
+            "claim": "About 900 highly skilled jobs",
+            "made_by": "North Lincolnshire Council reporting of applicant figures",
+            "date": "2026-03",
+            "deadline": null,
+            "status": "unverified",
+            "source": "https://www.bbc.co.uk/news/articles/c5y63pl88m5o",
+            "archived": null
+          }
+        ],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2025-05",
+            "event": "Outline planning application PA/2025/643 submitted",
+            "source": "https://apps.northlincs.gov.uk/application/pa-2025-643"
+          },
+          {
+            "date": "2026-03-11",
+            "event": "North Lincolnshire Council planning committee minded to approve outline permission",
+            "source": "https://www.theguardian.com/technology/2026/mar/12/council-approves-lincolnshire-datacentre-despite-emissions-warnings"
+          }
+        ],
+        "controversies": [
+          {
+            "summary": "Permanent loss of over 430 acres of productive farmland raised in objections; land classification records show substantial best and most versatile farmland",
+            "source": "PA/2025/643 committee report (representations and ALC sections)",
+            "label": "reporting"
+          }
+        ],
+        "sources": [
+          {
+            "label": "North Lincolnshire planning portal — PA/2025/643",
+            "url": "https://apps.northlincs.gov.uk/application/pa-2025-643",
+            "archived": null
+          },
+          {
+            "label": "Committee report PA/2025/643 (Modern.gov PDF)",
+            "url": "https://northlincolnshire.moderngov.co.uk/documents/s26464/PA_2025_643%20-%20major%20applications.pdf",
+            "archived": null
+          },
+          {
+            "label": "BBC — outline approval",
+            "url": "https://www.bbc.co.uk/news/articles/c5y63pl88m5o",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.255, 53.643]
+      },
+      "properties": {
+        "id": "humber-tech-park",
+        "name": "Humber Tech Park",
+        "operator": "Humber Tech Park Ltd",
+        "status": "approved",
+        "local_authority": "North Lincolnshire Council",
+        "planning_ref": {
+          "id": "PA/2024/584",
+          "url": "https://apps.northlincs.gov.uk/application/pa-2024-584"
+        },
+        "summary": "Outline permission for a ~386 MW campus on land south of the A160, South Killingholme. Shares directors with Elsham Tech Park Ltd; Greystoke Land links reported.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": null,
+          "max_proposed_mw": {
+            "value": 386,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Humber Tech Park Ltd / DCD reporting of 386 MW across three buildings; planning description cites up to ~309,000 m² GEA",
+            "page": null,
+            "archived": null
+          }
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": {
+            "value": 188,
+            "unit": "acres",
+            "basis": "stated",
+            "source": "Place Yorkshire / reporting of South Killingholme site area (~188 acres); confirm against red-line",
+            "page": null,
+            "archived": null
+          },
+          "previous_use": "Greenfield / undeveloped land south of the A160",
+          "land_type": "agricultural",
+          "alc_grades": null
+        },
+        "grid_connection": {
+          "summary": "Electricity substation included in outline description.",
+          "new_substation": true,
+          "overhead_line_upgrades": null,
+          "basis": "planning_doc",
+          "source": "PA/2024/584 outline description"
+        },
+        "cooling": null,
+        "claims_on_record": [
+          {
+            "claim": "Up to £3 billion foreign direct investment",
+            "made_by": "Humber Tech Park",
+            "date": null,
+            "deadline": null,
+            "status": "unverified",
+            "source": "https://www.humbertechpark.com/",
+            "archived": null
+          }
+        ],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2024-08",
+            "event": "North Lincolnshire Council grants outline planning permission (PA/2024/584)",
+            "source": "https://www.humbertechpark.com/"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "North Lincolnshire planning portal — PA/2024/584",
+            "url": "https://apps.northlincs.gov.uk/application/pa-2024-584",
+            "archived": null
+          },
+          {
+            "label": "Humber Tech Park project site",
+            "url": "https://www.humbertechpark.com/",
+            "archived": null
+          },
+          {
+            "label": "DCD — outline permission report",
+            "url": "https://www.datacenterdynamics.com/en/news/green-light-for-386mw-data-center-campus-in-lincolnshire-uk/",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-1.777, 53.793]
+      },
+      "properties": {
+        "id": "deep-green-bradford",
+        "name": "Deep Green Bradford",
+        "operator": "Deep Green",
+        "status": "proposed",
+        "local_authority": "City of Bradford Metropolitan District Council",
+        "planning_ref": {
+          "id": null,
+          "url": null
+        },
+        "summary": "5.6 megawatt heat-reusing facility at Listerhills / Thornton Road. News reports say Bradford Council approved it in May 2026. We still list it as proposed until we can link the live council planning page.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": {
+            "value": 5.6,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Deep Green press materials describing a 5.6 MW heat-reusing data centre",
+            "page": null,
+            "archived": null
+          },
+          "phase_1_mw": null,
+          "max_proposed_mw": {
+            "value": 5.6,
+            "unit": "MW",
+            "basis": "stated",
+            "source": "Deep Green press materials / BBC reporting",
+            "page": null,
+            "archived": null
+          }
+        },
+        "water_litres_pa": {
+          "value": 0,
+          "unit": "litres/year",
+          "basis": "stated",
+          "source": "Deep Green claim of eliminated / zero water usage via closed-loop cooling",
+          "page": null,
+          "archived": null
+        },
+        "land": {
+          "acres": {
+            "value": 0.85,
+            "unit": "acres",
+            "basis": "stated",
+            "source": "Reporting of ~3,420 m² site (≈0.85 acres) — confirm against planning drawings",
+            "page": null,
+            "archived": null
+          },
+          "previous_use": "Land east of Bradford Energy Centre (temporary contractor/storage area under energy-centre consent)",
+          "land_type": "industrial_active",
+          "alc_grades": null
+        },
+        "grid_connection": null,
+        "cooling": {
+          "claim": "Closed-loop cooling; up to 95% of heat reused into Bradford Energy Network; zero water use claimed",
+          "basis": "stated",
+          "source": "https://deepgreen.energy/news/deep-green-welcomes-planning-approval-for-pioneering-bradford-heat--reuse-data-centre"
+        },
+        "claims_on_record": [
+          {
+            "claim": "Eliminates water usage",
+            "made_by": "Deep Green",
+            "date": "2026-05-14",
+            "deadline": null,
+            "status": "unverified",
+            "source": "https://deepgreen.energy/news/deep-green-welcomes-planning-approval-for-pioneering-bradford-heat--reuse-data-centre",
+            "archived": null
+          },
+          {
+            "claim": "Reuses up to 95% of generated heat for practical local benefit",
+            "made_by": "Deep Green",
+            "date": "2026-05-14",
+            "deadline": null,
+            "status": "unverified",
+            "source": "https://deepgreen.energy/news/deep-green-welcomes-planning-approval-for-pioneering-bradford-heat--reuse-data-centre",
+            "archived": null
+          }
+        ],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2025-07",
+            "event": "Deep Green files for Bradford heat-reuse data centre beside Bradford Energy Centre",
+            "source": "https://www.datacenterdynamics.com/en/news/deep-green-files-to-build-5mw-data-center-in-bradford-uk/"
+          },
+          {
+            "date": "2026-05",
+            "event": "News reports: Bradford Council grants planning approval (live council page link still to confirm)",
+            "source": "https://www.bbc.co.uk/news/articles/cd7p21599zgo"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "Deep Green — planning approval announcement",
+            "url": "https://deepgreen.energy/news/deep-green-welcomes-planning-approval-for-pioneering-bradford-heat--reuse-data-centre",
+            "archived": null
+          },
+          {
+            "label": "BBC — Bradford heat-reuse approval",
+            "url": "https://www.bbc.co.uk/news/articles/cd7p21599zgo",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-15"
+      }
+    }
+  ]
+}

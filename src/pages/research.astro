@@ -1,0 +1,228 @@
+---
+import BaseLayout from "../components/BaseLayout.astro";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const checklist = [
+  {
+    site: "Microsoft Skelton Grange",
+    ref: "25/06139/FU",
+    url: null as string | null,
+    urlLabel: null as string | null,
+    urlNote: "No lasting case page yet (only Leeds search)",
+    power: "Not disclosed",
+    notes:
+      "Leeds Plans Panel resolution to grant reported April 2026 (Harworth / press). Still listed as proposed until a live Public Access URL is linked.",
+  },
+  {
+    site: "Microsoft Eggborough",
+    ref: "Unknown",
+    url: null,
+    urlLabel: null,
+    urlNote: "No live URL yet",
+    power: "Not disclosed",
+    notes: "No planning reference or megawatt figure recorded in materials reviewed so far.",
+  },
+  {
+    site: "Drax data centre",
+    ref: "Screening / full ref TBD",
+    url: null,
+    urlLabel: null,
+    urlNote: "No live URL yet",
+    power: "100 MW phase 1 · up to 1,000 MW stated",
+    notes:
+      "Figures from press and company materials, not yet a live council planning page. Whether a full environmental impact assessment is needed is disputed.",
+  },
+  {
+    site: "Elsham Tech Park",
+    ref: "PA/2025/643",
+    url: "https://apps.northlincs.gov.uk/application/pa-2025-643",
+    urlLabel: "Open portal",
+    urlNote: null,
+    power: "Up to 1,000 MW for computing equipment (outline)",
+    notes: "Outline approval Mar 2026 (North Lincs). Farmland including best and most versatile grades.",
+  },
+  {
+    site: "Humber Tech Park",
+    ref: "PA/2024/584",
+    url: "https://apps.northlincs.gov.uk/application/pa-2024-584",
+    urlLabel: "Open portal",
+    urlNote: null,
+    power: "386 MW (stated / reporting)",
+    notes: "Outline permission Aug 2024 (North Lincs). Acreage still to confirm against drawings.",
+  },
+  {
+    site: "Deep Green Bradford",
+    ref: "Unknown",
+    url: null,
+    urlLabel: null,
+    urlNote: "No live URL yet",
+    power: "5.6 MW stated",
+    notes:
+      "Bradford approval reported May 2026 (operator / BBC). Still listed as proposed until a live portal URL is linked.",
+  },
+];
+
+const leedsLetter = `[Your name]
+[Date]
+
+Information Governance
+Leeds City Council
+[published FOI / EIR email or portal]
+
+Dear Sir/Madam,
+
+Freedom of Information Act 2000 / Environmental Information Regulations 2004
+
+I request information about planning application 25/06139/FU (Microsoft / Skelton Grange data centre, Stourton).
+
+Please provide:
+
+1. The lasting public web address (or the council’s internal case ID) that opens this application’s live page on the Public Access planning system, not only the generic search form.
+
+2. The decision notice, committee report, and any officer report recommending grant or resolution-to-grant, with document titles and dates.
+
+3. Any Environmental Statement chapters, energy statements, or utilities/infrastructure notes that state megawatt capacity, grid connection size, water demand, or cooling method for this development (or confirmation that no such figures appear in the application documents held).
+
+4. If any item is already published, please give the direct document URL on Public Access rather than attaching duplicates.
+
+I am happy to receive the response electronically. If the cost limit applies, please advise how to refine the request. This is for a public-interest project assembling sourced environmental figures for regional data centre proposals (The Yorkshire Compute Belt).
+
+Yours faithfully,
+[Name]
+[Email]`;
+
+const waterLetter = `[Your name]
+[Date]
+
+Information Governance / EIR
+Yorkshire Water
+[published EIR address]
+
+Dear Sir/Madam,
+
+Environmental Information Regulations 2004: request for information
+
+I am requesting environmental information about water supply and wastewater impacts of proposed and consented data centre developments in Yorkshire and the Humber.
+
+Please treat this as a request under the Environmental Information Regulations 2004.
+
+For the period 1 January 2020 to the date of your response, please provide:
+
+1. Any assessments, capacity studies, network constraint notes, or correspondence assessing the impact on public water supply or sewerage/wastewater capacity of data centre or “tech park” developments at or near:
+   a) Skelton Grange / Stourton, Leeds (also referred to as Microsoft Skelton Grange);
+   b) Eggborough, North Yorkshire (Microsoft);
+   c) Drax Power Station site, Selby / North Yorkshire (data centre proposals);
+   d) Elsham Tech Park, North Lincolnshire (planning ref PA/2025/643);
+   e) Humber Tech Park, North Lincolnshire (planning ref PA/2024/584);
+   f) Land east of Bradford Energy Centre / Listerhills, Bradford (Deep Green / heat-reuse data centre).
+
+2. For each of the above where held: stated or estimated annual or peak water demand (megalitres or litres), whether supply is potable / non-potable / private, and any discharge consent volumes or temperatures relevant to cooling or process water.
+
+3. Any documents in which an operator or applicant claimed “zero water use”, “eliminates water usage”, or closed-loop / no potable offtake for a data centre in your area, and Yorkshire Water’s recorded view on that claim (agreement, caveat, or rejection).
+
+4. If information is held but some sites have none, please say so site by site rather than refusing the whole request.
+
+I am happy to receive information electronically. If any part exceeds the cost limit or engages an exception, please advise what can be disclosed within the limit and how I might refine the request.
+
+This information is sought for a public-interest project assembling sourced environmental figures for data centre proposals in the region (The Yorkshire Compute Belt). I do not seek personal data of individuals.
+
+Yours faithfully,
+[Name]
+[Email]`;
+---
+
+<BaseLayout
+  title="Research"
+  description="Verification gaps and sample information-request letters for documenting the physical footprint of data centres across Yorkshire and the Humber."
+>
+  <h1 class="font-display text-3xl m-0 tracking-tight">Research</h1>
+  <p class="text-[var(--muted)] mt-2 max-w-2xl">
+    Closing these gaps is how the map gets closer to the real physical footprint: power, land, water, and
+    live planning evidence. Figures stay provisional until the items below are filled.
+    How we use evidence is on <a href={`${base}/methodology`}>Methodology</a>.
+  </p>
+
+  <section class="mt-12" id="hard-rule">
+    <h2 class="font-display text-xl m-0">Our rule on status</h2>
+    <p class="mt-3 max-w-2xl">
+      No status above <strong>proposed</strong> without a link that opens the live planning application
+      (not a search form).
+    </p>
+  </section>
+
+  <section class="mt-12" id="checklist">
+    <h2 class="font-display text-xl m-0">Site checklist</h2>
+    <div class="overflow-x-auto mt-4">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="border-b border-[var(--ink)] text-left text-xs uppercase tracking-wider text-[var(--muted)]">
+            <th class="py-2 pr-3">Site</th>
+            <th class="py-2 pr-3">Planning ref</th>
+            <th class="py-2 pr-3">Live URL</th>
+            <th class="py-2 pr-3">Power</th>
+            <th class="py-2">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {checklist.map((row) => (
+            <tr class="border-b border-[var(--line)] align-top">
+              <td class="py-2.5 pr-3 font-medium">{row.site}</td>
+              <td class="py-2.5 pr-3 font-tabular">{row.ref}</td>
+              <td class="py-2.5 pr-3">
+                {row.url ? (
+                  <a href={row.url} rel="noopener">{row.urlLabel ?? "Open portal"}</a>
+                ) : (
+                  <span class="text-[var(--muted)]">{row.urlNote}</span>
+                )}
+              </td>
+              <td class="py-2.5 pr-3">{row.power}</td>
+              <td class="py-2.5 text-[var(--muted)]">{row.notes}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="mt-12" id="outstanding">
+    <h2 class="font-display text-xl m-0">Outstanding before we treat figures as fully checked</h2>
+    <ol class="mt-3 max-w-2xl space-y-2">
+      <li>Save an archived copy of every source link when we add it.</li>
+      <li>Find lasting council planning pages for Skelton, Deep Green, Drax, and Eggborough, then update statuses where that allows.</li>
+      <li>Cite exact pages inside planning PDFs, not only committee-report summaries.</li>
+      <li>Check map pins against the official site-boundary drawings in each application.</li>
+      <li>Confirm Humber acreage and megawatts against PA/2024/584 documents, not press alone.</li>
+    </ol>
+  </section>
+
+  <section class="mt-12" id="local-consumption">
+    <h2 class="font-display text-xl m-0">Local consumption</h2>
+    <p class="mt-3 max-w-2xl">
+      Local-authority electricity totals loaded from Department for Energy Security and Net Zero
+      subnational statistics (2024 rows) on 2026-07-15.
+      Download: <a href={`${base}/data/local_consumption.json`}>local consumption figures</a>.
+    </p>
+  </section>
+
+  <section class="mt-12" id="foi">
+    <h2 class="font-display text-xl m-0">Sample information-request letters</h2>
+    <p class="mt-3 max-w-2xl">
+      These are templates you can copy. Prefer the Environmental Information Regulations 2004 for environmental
+      holdings (water, emissions, planning environment material). Prefer the Freedom of Information Act 2000
+      for other council records. Send one public authority at a time via their published channel.
+    </p>
+
+    <h3 class="font-display text-lg m-0 mt-8" id="foi-leeds">Leeds City Council · Skelton Grange</h3>
+    <p class="text-sm text-[var(--muted)] mt-2 max-w-2xl">
+      Goal: a lasting link to the live planning case page for application 25/06139/FU, plus any power, water, or cooling figures on file.
+    </p>
+    <pre class="mt-3 max-w-3xl overflow-x-auto text-xs leading-relaxed bg-white/50 border border-[var(--line)] p-4 whitespace-pre-wrap font-mono text-[var(--ink)]">{leedsLetter}</pre>
+
+    <h3 class="font-display text-lg m-0 mt-10" id="foi-yorkshire-water">Yorkshire Water · water capacity and zero-water claims</h3>
+    <p class="text-sm text-[var(--muted)] mt-2 max-w-2xl">
+      Target: offtake, discharge, and whether “zero water” claims have been recorded or challenged.
+    </p>
+    <pre class="mt-3 max-w-3xl overflow-x-auto text-xs leading-relaxed bg-white/50 border border-[var(--line)] p-4 whitespace-pre-wrap font-mono text-[var(--ink)]">{waterLetter}</pre>
+  </section>
+</BaseLayout>

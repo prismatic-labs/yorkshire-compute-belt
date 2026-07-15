@@ -1,0 +1,19 @@
+{
+  "$version": "0.1.0",
+  "site_name": "The Yorkshire Compute Belt",
+  "sub_brand": "God's Own Compute",
+  "region": {
+    "id": "yorkshire-humber",
+    "label": "Yorkshire & the Humber",
+    "map": {
+      "center": [-1.0, 53.75],
+      "zoom": 8.5,
+      "coord_order": "GeoJSON [lng, lat]"
+    }
+  },
+  "contact": {
+    "corrections_email": "marco@prismaticlabs.ai",
+    "github_issues": "https://github.com/prismatic-labs/yorkshire-compute-belt/issues"
+  },
+  "staleness_banner_days": 120
+}

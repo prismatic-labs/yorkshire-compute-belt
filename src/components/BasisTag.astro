@@ -1,0 +1,18 @@
+---
+import { basisAriaLabel, basisLabel } from "../lib/units";
+import type { Basis } from "../lib/types";
+
+interface Props {
+  basis: Basis;
+}
+
+const { basis } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<a
+  class="basis-tag"
+  href={`${base}/methodology#basis`}
+  aria-label={basisAriaLabel(basis)}
+  title={basisAriaLabel(basis)}
+>{basisLabel(basis)}</a>

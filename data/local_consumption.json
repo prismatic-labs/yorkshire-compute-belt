@@ -1,0 +1,30 @@
+{
+  "$version": "0.1.0",
+  "source": {
+    "publisher": "DESNZ",
+    "title": "Subnational electricity consumption statistics — local authority stacked table",
+    "year": 2024,
+    "url": "https://www.gov.uk/government/statistical-data-sets/stacked-electricity-consumption-statistics-data",
+    "file": "elec_LA_stacked_2005-2024.csv",
+    "retrieved": "2026-07-15",
+    "note": "All_consumption_GWh = domestic + non-domestic metered electricity for the calendar year."
+  },
+  "unit": "GWh/year",
+  "authorities": [
+    { "code": "E08000032", "name": "Bradford", "total_gwh": 1515.5, "domestic_gwh": 692.5 },
+    { "code": "E08000035", "name": "Leeds", "total_gwh": 2863.5, "domestic_gwh": 1130.8 },
+    { "code": "E08000036", "name": "Wakefield", "total_gwh": 1494.7, "domestic_gwh": 468.4 },
+    { "code": "E08000034", "name": "Kirklees", "total_gwh": 1255.1, "domestic_gwh": 579.8 },
+    { "code": "E08000033", "name": "Calderdale", "total_gwh": 704.0, "domestic_gwh": 309.1 },
+    { "code": "E08000039", "name": "Sheffield", "total_gwh": 1898.7, "domestic_gwh": 726.3 },
+    { "code": "E08000017", "name": "Doncaster", "total_gwh": 1142.0, "domestic_gwh": 416.2 },
+    { "code": "E08000018", "name": "Rotherham", "total_gwh": 902.6, "domestic_gwh": 348.1 },
+    { "code": "E08000038", "name": "Barnsley", "total_gwh": 863.8, "domestic_gwh": 326.9 },
+    { "code": "E06000065", "name": "North Yorkshire", "total_gwh": 2953.5, "domestic_gwh": 1091.4 },
+    { "code": "E06000014", "name": "York", "total_gwh": 743.0, "domestic_gwh": 286.3 },
+    { "code": "E06000011", "name": "East Riding of Yorkshire", "total_gwh": 1473.9, "domestic_gwh": 534.7 },
+    { "code": "E06000010", "name": "Kingston upon Hull", "total_gwh": 1000.4, "domestic_gwh": 337.4 },
+    { "code": "E06000013", "name": "North Lincolnshire", "total_gwh": 1060.0, "domestic_gwh": 235.4 },
+    { "code": "E06000012", "name": "North East Lincolnshire", "total_gwh": 686.8, "domestic_gwh": null }
+  ]
+}

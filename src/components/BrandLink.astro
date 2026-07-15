@@ -1,0 +1,43 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<a
+  class={`ycb-brand ${className}`}
+  href="https://prismaticlabs.ai"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <img
+    src={`${base}/prismatic-logo.svg`}
+    alt="Prismatic Labs"
+    width="200"
+    height="72"
+    decoding="async"
+  />
+</a>
+
+<style>
+  .ycb-brand {
+    display: inline-block;
+    flex-shrink: 0;
+    line-height: 0;
+    text-decoration: none;
+    opacity: 0.92;
+  }
+  .ycb-brand:hover {
+    opacity: 1;
+  }
+  .ycb-brand img {
+    display: block;
+    height: 56px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+  }
+</style>

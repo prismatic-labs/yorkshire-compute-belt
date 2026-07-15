@@ -1,0 +1,31 @@
+name: Correction
+description: Correct a figure, source, or status on an existing site
+title: "[Correction]: "
+labels: ["correction", "review-queue"]
+body:
+  - type: input
+    id: site
+    attributes:
+      label: Site id or name
+      placeholder: elsham
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What should change?
+      description: Current text/figure and proposed replacement
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Document title, page/paragraph, and URL (archive if possible)
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact (optional)
+      placeholder: email if you want a reply

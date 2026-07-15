@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://computebelt.uk/schema/sites.geojson.json",
+  "$version": "0.1.0",
+  "title": "Yorkshire Compute Belt sites",
+  "description": "FeatureCollection of data-centre sites. Coordinates are GeoJSON-native [lng, lat].",
+  "type": "object",
+  "required": ["$version", "type", "features"],
+  "properties": {
+    "$version": { "type": "string" },
+    "type": { "const": "FeatureCollection" },
+    "features": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/siteFeature" }
+    }
+  },
+  "$defs": {
+    "quantity": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["value", "unit", "basis", "source"],
+          "properties": {
+            "value": { "type": "number" },
+            "unit": { "type": "string" },
+            "basis": {
+              "enum": ["stated", "planning_doc", "estimated", "measured"]
+            },
+            "source": { "type": "string" },
+            "page": { "type": ["string", "null"] },
+            "archived": { "type": ["string", "null"] }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "siteFeature": {
+      "type": "object",
+      "required": ["type", "geometry", "properties"],
+      "properties": {
+        "type": { "const": "Feature" },
+        "geometry": {
+          "type": "object",
+          "required": ["type", "coordinates"],
+          "properties": {
+            "type": { "const": "Point" },
+            "coordinates": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": { "type": "number" },
+              "description": "[longitude, latitude] — GeoJSON order"
+            }
+          }
+        },
+        "properties": { "$ref": "#/$defs/siteProperties" }
+      }
+    },
+    "siteProperties": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "operator",
+        "status",
+        "local_authority",
+        "planning_ref",
+        "power",
+        "land",
+        "claims_on_record",
+        "sources",
+        "last_reviewed"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "name": { "type": "string" },
+        "operator": { "type": "string" },
+        "status": {
+          "enum": [
+            "proposed",
+            "in_planning",
+            "approved",
+            "under_construction",
+            "operating",
+            "refused",
+            "withdrawn"
+          ]
+        },
+        "local_authority": { "type": "string" },
+        "planning_ref": {
+          "type": "object",
+          "required": ["id", "url"],
+          "properties": {
+            "id": { "type": ["string", "null"] },
+            "url": { "type": ["string", "null"] }
+          }
+        },
+        "power": {
+          "type": "object",
+          "required": [
+            "grid_connection_mw",
+            "it_load_mw",
+            "phase_1_mw",
+            "max_proposed_mw"
+          ],
+          "properties": {
+            "grid_connection_mw": { "$ref": "#/$defs/quantity" },
+            "it_load_mw": { "$ref": "#/$defs/quantity" },
+            "phase_1_mw": { "$ref": "#/$defs/quantity" },
+            "max_proposed_mw": { "$ref": "#/$defs/quantity" }
+          }
+        },
+        "water_litres_pa": { "$ref": "#/$defs/quantity" },
+        "land": {
+          "type": "object",
+          "required": ["acres", "previous_use", "land_type"],
+          "properties": {
+            "acres": { "$ref": "#/$defs/quantity" },
+            "previous_use": { "type": ["string", "null"] },
+            "land_type": {
+              "enum": ["brownfield", "agricultural", "industrial_active"]
+            },
+            "alc_grades": { "type": ["string", "null"] }
+          }
+        },
+        "grid_connection": { "type": ["object", "null"] },
+        "cooling": { "type": ["object", "null"] },
+        "claims_on_record": { "type": "array" },
+        "operator_response": { "type": ["object", "null"] },
+        "timeline": { "type": "array" },
+        "controversies": { "type": "array" },
+        "sources": { "type": "array" },
+        "last_reviewed": { "type": "string", "format": "date" },
+        "summary": { "type": "string" }
+      }
+    }
+  }
+}

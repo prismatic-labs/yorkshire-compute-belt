@@ -1,0 +1,90 @@
+---
+import BaseLayout from "../components/BaseLayout.astro";
+import BrandLink from "../components/BrandLink.astro";
+import SiteMap from "../components/SiteMap";
+import { correctionsMailto } from "../lib/contact";
+import { getConfig, getSites, regionalTotals, formatBestPower } from "../lib/sites";
+import { formatNumber } from "../lib/units";
+
+const config = getConfig();
+const sites = getSites();
+const totals = regionalTotals(sites);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const center = config.region.map.center as [number, number];
+---
+
+<BaseLayout fullBleed description="Map of data centre sites across Yorkshire & the Humber.">
+  <SiteMap
+    client:load
+    sites={sites}
+    baseUrl={base}
+    center={center}
+    zoom={config.region.map.zoom}
+  />
+
+  <section class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="font-display text-2xl m-0 tracking-tight">Regional footprint</h2>
+    <p class="text-[var(--muted)] mt-2 mb-6">
+      {totals.count} sites · {totals.powerLabel} · {formatNumber(totals.acres)} acres of land take
+      {totals.undisclosedPower > 0 && (
+        <span> · {totals.undisclosedPower} with power not disclosed</span>
+      )}
+      . The “at least” symbol (≥) marks incomplete disclosure.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border-collapse">
+        <thead>
+          <tr class="border-b border-[var(--line)] text-left text-[var(--muted)]">
+            <th class="py-2 font-medium">Site</th>
+            <th class="py-2 font-medium">Status</th>
+            <th class="py-2 font-medium">Power</th>
+            <th class="py-2 font-medium">Site area</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sites.map((f) => (
+            <tr class="border-b border-[var(--line)]">
+              <td class="py-2"><a href={`${base}/site/${f.properties.id}`}>{f.properties.name}</a></td>
+              <td class="py-2 capitalize">{f.properties.status.replaceAll("_", " ")}</td>
+              <td class="py-2 font-tabular">{formatBestPower(f.properties)}</td>
+              <td class="py-2 font-tabular">
+                {f.properties.land.acres
+                  ? `${formatNumber(f.properties.land.acres.value)} acres`
+                  : "Unknown"}
+                {" · "}
+                {f.properties.land.land_type === "brownfield"
+                  ? "brownfield"
+                  : f.properties.land.land_type === "agricultural"
+                    ? "farmland"
+                    : "industrial"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-8 mb-0 flex flex-wrap gap-4 text-sm">
+      <a href={`${base}/sites`}>Full sortable table</a>
+      <a href={`${base}/compare`}>Compare view</a>
+      <a href={`${base}/research`}>Research log</a>
+      <a href={`${base}/methodology`}>Methodology</a>
+    </p>
+  </section>
+
+  <footer class="border-t border-[var(--line)] py-8 text-sm text-[var(--muted)]">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p class="m-0">
+          <span class="wordmark text-[var(--muted)]">{config.site_name}</span>
+        </p>
+        <p class="m-0 mt-2">
+          Corrections: <a href={correctionsMailto()}>{config.contact.corrections_email}</a>.
+          Opens with subject “Yorkshire Compute Belt: correction”.
+        </p>
+      </div>
+      <BrandLink />
+    </div>
+  </footer>
+</BaseLayout>

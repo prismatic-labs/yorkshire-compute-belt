@@ -1,0 +1,324 @@
+---
+import BaseLayout from "../../components/BaseLayout.astro";
+import BasisTag from "../../components/BasisTag.astro";
+import { correctionsEmail, correctionsMailto } from "../../lib/contact";
+import {
+  disclosureChecklist,
+  getLocalAuthorities,
+  getSite,
+  getSites,
+  siteBestPower,
+} from "../../lib/sites";
+import {
+  LOAD_FACTOR_DISCLOSURE,
+  footballPitchesEquivalence,
+  formatNumber,
+  homesEquivalence,
+  kettleEquivalence,
+  localGeographyEquivalence,
+  powerKindExplanation,
+  powerKindLabel,
+  waterResidentsEquivalence,
+  wheatForegoneEquivalence,
+} from "../../lib/units";
+
+export function getStaticPaths() {
+  return getSites().map((f) => ({ params: { id: f.properties.id } }));
+}
+
+const { id } = Astro.params;
+const feature = getSite(id!);
+if (!feature) throw new Error(`Unknown site ${id}`);
+const p = feature.properties;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const best = siteBestPower(p);
+const authorities = getLocalAuthorities();
+const kettles = kettleEquivalence(p.power);
+const homes = homesEquivalence(p.power);
+const local = localGeographyEquivalence(p.power, authorities);
+const water = waterResidentsEquivalence(p.water_litres_pa);
+const pitches = footballPitchesEquivalence(p.land.acres);
+const wheat = wheatForegoneEquivalence(p.land.acres, {
+  alcSupportsYield: Boolean(p.land.alc_grades && /Grade [123]a?/i.test(p.land.alc_grades)),
+});
+const disclosure = disclosureChecklist(p);
+const [lng, lat] = feature.geometry.coordinates;
+const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name });
+---
+
+<BaseLayout title={p.name} description={p.summary ?? `${p.name} site details`}>
+  <p class="text-xs uppercase tracking-wider text-[var(--muted)] m-0">
+    <a href={`${base}/sites`} class="text-inherit">Sites</a> / {p.name}
+  </p>
+  <h1 class="font-display text-3xl sm:text-4xl m-0 mt-2 tracking-tight">{p.name}</h1>
+  <p class="mt-2 mb-0 text-[var(--muted)]">
+    {p.operator} · <span class="capitalize">{p.status.replaceAll("_", " ")}</span> · {p.local_authority}
+  </p>
+  {p.summary && <p class="mt-4 max-w-2xl">{p.summary}</p>}
+
+  <section class="mt-10 grid gap-6 sm:grid-cols-3">
+    <div class="border-t border-[var(--ink)] pt-3">
+      <h2 class="text-xs uppercase tracking-wider text-[var(--muted)] m-0 font-medium">Power</h2>
+      <p class="font-display text-2xl m-0 mt-1 font-tabular">
+        {best ? `${formatNumber(best.quantity.value)} MW` : "Not disclosed"}
+      </p>
+      {best ? (
+        <p class="text-sm m-0 mt-1 text-[var(--muted)]">
+          {powerKindLabel(best.kind)}
+          <BasisTag basis={best.quantity.basis} />
+        </p>
+      ) : (
+        <p class="text-sm m-0 mt-1 text-[var(--muted)]">No megawatt figure in materials reviewed</p>
+      )}
+      <p class="text-xs m-0 mt-2 text-[var(--muted)] max-w-xs">
+        {best
+          ? powerKindExplanation(best.kind)
+          : "Operators often omit a megawatt figure. Map circles then use site area instead."}
+        {" "}
+        <a href={`${base}/methodology#power`}>Power size is not electricity use</a>.
+      </p>
+    </div>
+    <div class="border-t border-[var(--ink)] pt-3">
+      <h2 class="text-xs uppercase tracking-wider text-[var(--muted)] m-0 font-medium">Site area</h2>
+      <p class="font-display text-2xl m-0 mt-1 font-tabular">
+        {p.land.acres ? `${formatNumber(p.land.acres.value)} acres` : "Unknown"}
+      </p>
+      <p class="text-sm m-0 mt-1 text-[var(--muted)]">
+        {p.land.land_type === "brownfield"
+          ? "ex-industrial / brownfield"
+          : p.land.land_type === "agricultural"
+            ? "farmland"
+            : "active industrial"}
+        {p.land.acres && <BasisTag basis={p.land.acres.basis} />}
+      </p>
+      {p.land.previous_use && (
+        <p class="text-xs m-0 mt-2 text-[var(--muted)] max-w-xs">
+          What was here: {p.land.previous_use}
+        </p>
+      )}
+    </div>
+    <div class="border-t border-[var(--ink)] pt-3">
+      <h2 class="text-xs uppercase tracking-wider text-[var(--muted)] m-0 font-medium">Water</h2>
+      <p class="font-display text-2xl m-0 mt-1 font-tabular">
+        {p.water_litres_pa == null
+          ? "Not disclosed"
+          : p.water_litres_pa.value === 0
+            ? "Zero"
+            : formatNumber(p.water_litres_pa.value)}
+      </p>
+      {p.water_litres_pa ? (
+        <>
+          <p class="text-sm m-0 mt-1 text-[var(--muted)]">
+            {p.water_litres_pa.value === 0
+              ? "litres/year · operator claim"
+              : "litres/year"}
+            <BasisTag basis={p.water_litres_pa.basis} />
+          </p>
+          {p.water_litres_pa.value === 0 && (
+            <p class="text-xs m-0 mt-2 text-[var(--muted)] max-w-xs">
+              {p.operator} claims cooling eliminates water use. That is their claim, not a metered reading.
+            </p>
+          )}
+        </>
+      ) : (
+        <p class="text-sm m-0 mt-1 text-[var(--muted)]">No annual water figure in materials reviewed</p>
+      )}
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="font-display text-xl m-0">Equivalences</h2>
+    <p class="text-sm text-[var(--muted)] mt-2">{LOAD_FACTOR_DISCLOSURE}</p>
+    <ul class="mt-4 space-y-3 list-none p-0">
+      {kettles && (
+        <li class="border-b border-[var(--line)] pb-3">
+          <strong class="font-tabular">{formatNumber(kettles.value)}</strong> kettles running at once
+          <details class="text-sm text-[var(--muted)] mt-1">
+            <summary>ⓘ Arithmetic and sources</summary>
+            <p class="mt-1">{kettles.label}</p>
+            <ul>{kettles.meta.assumptions.map((a) => <li>{a}</li>)}</ul>
+            <p>
+              Figure type: {kettles.meta.powerKind && powerKindLabel(kettles.meta.powerKind)}
+              {kettles.meta.weakestBasis ? ` · ${kettles.meta.weakestBasis.replaceAll("_", " ")}` : ""}
+            </p>
+          </details>
+        </li>
+      )}
+      {homes && (
+        <li class="border-b border-[var(--line)] pb-3">
+          <strong class="font-tabular">{formatNumber(homes.value.low)}-{formatNumber(homes.value.high)}</strong> homes' annual electricity
+          <details class="text-sm text-[var(--muted)] mt-1">
+            <summary>ⓘ Arithmetic and sources</summary>
+            <p class="mt-1">{homes.label}</p>
+            <ul>{homes.meta.assumptions.map((a) => <li>{a}</li>)}</ul>
+          </details>
+        </li>
+      )}
+      {local && (
+        <li class="border-b border-[var(--line)] pb-3">
+          Local geography (load-factor range): <strong>{local.value.lowLabel}</strong> to <strong>{local.value.highLabel}</strong>
+          <details class="text-sm text-[var(--muted)] mt-1">
+            <summary>ⓘ Arithmetic and sources</summary>
+            <p class="mt-1">{local.label}</p>
+            <p class="font-tabular">
+              {formatNumber(local.value.lowGwh, 0)}-{formatNumber(local.value.highGwh, 0)} gigawatt-hours per year assumed
+            </p>
+            <ul>{local.meta.assumptions.map((a) => <li>{a}</li>)}</ul>
+          </details>
+        </li>
+      )}
+      <li class="border-b border-[var(--line)] pb-3">
+        Water: {water.label}
+        {water.value != null && (
+          <details class="text-sm text-[var(--muted)] mt-1">
+            <summary>ⓘ Arithmetic and sources</summary>
+            <ul>{water.meta.assumptions.map((a) => <li>{a}</li>)}</ul>
+          </details>
+        )}
+      </li>
+      {pitches && (
+        <li class="border-b border-[var(--line)] pb-3">
+          Site area: <strong class="font-tabular">{formatNumber(pitches.value, 1)}</strong> football pitches
+        </li>
+      )}
+      {wheat && (
+        <li class="border-b border-[var(--line)] pb-3">
+          Wheat foregone (Agricultural Land Classification supports a yield comparison):{" "}
+          <strong class="font-tabular">{formatNumber(wheat.value.low)}-{formatNumber(wheat.value.high)}</strong> tonnes/year
+          <details class="text-sm text-[var(--muted)] mt-1">
+            <summary>ⓘ Arithmetic and sources</summary>
+            <ul>{wheat.meta.assumptions.map((a) => <li>{a}</li>)}</ul>
+            {p.land.alc_grades && (
+              <p>Agricultural Land Classification grades on site: {p.land.alc_grades}</p>
+            )}
+          </details>
+        </li>
+      )}
+    </ul>
+  </section>
+
+  {p.grid_connection && (
+    <section class="mt-12">
+      <h2 class="font-display text-xl m-0">Grid connection</h2>
+      <p class="mt-2">{p.grid_connection.summary} <BasisTag basis={p.grid_connection.basis} /></p>
+      <ul class="text-sm text-[var(--muted)]">
+        <li>New substation: {p.grid_connection.new_substation == null ? "not stated" : p.grid_connection.new_substation ? "yes" : "no"}</li>
+        <li>Overhead line upgrades: {p.grid_connection.overhead_line_upgrades == null ? "not stated" : p.grid_connection.overhead_line_upgrades ? "yes / mentioned" : "no"}</li>
+      </ul>
+    </section>
+  )}
+
+  {p.cooling && (
+    <section class="mt-12">
+      <h2 class="font-display text-xl m-0">Cooling</h2>
+      <p class="mt-2">{p.cooling.claim} <BasisTag basis={p.cooling.basis} /></p>
+    </section>
+  )}
+
+  <section class="mt-12">
+    <h2 class="font-display text-xl m-0">Claims on record</h2>
+    {p.claims_on_record.length === 0 ? (
+      <p class="text-[var(--muted)]">None recorded yet.</p>
+    ) : (
+      <ul class="mt-3 space-y-4 list-none p-0">
+        {p.claims_on_record.map((c) => (
+          <li class="border-l-2 border-[var(--line)] pl-3">
+            <p class="m-0">“{c.claim}”</p>
+            <p class="m-0 mt-1 text-sm text-[var(--muted)]">
+              {c.made_by}{c.date ? ` · ${c.date}` : ""}{c.deadline ? ` · deadline ${c.deadline}` : ""} · status: {c.status.replaceAll("_", " ")}
+            </p>
+            <p class="m-0 text-sm"><a href={c.source} rel="noopener">Source</a></p>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <section class="mt-12">
+    <h2 class="font-display text-xl m-0">Disclosure checklist</h2>
+    <ul class="mt-3 text-sm columns-1 sm:columns-2 gap-8">
+      <li>Power: {disclosure.power ? "disclosed" : "not disclosed"}</li>
+      <li>Water: {disclosure.water ? "disclosed" : "not disclosed"}</li>
+      <li>Power usage effectiveness (PUE): {disclosure.pue ? "disclosed" : "not disclosed"}</li>
+      <li>Energy source claim: {disclosure.energy_source ? "on record" : "none on record"}</li>
+      <li>Load factor: {disclosure.load_factor ? "disclosed" : "not disclosed"}</li>
+    </ul>
+    <p class="text-xs text-[var(--muted)]">Plain checklist, no aggregate score.</p>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="font-display text-xl m-0">Right of reply</h2>
+    {p.operator_response ? (
+      <blockquote class="mt-2 border-l-2 border-[var(--grid-blue)] pl-3">
+        <p>{p.operator_response.text}</p>
+        <footer class="text-sm text-[var(--muted)]">{p.operator_response.date}</footer>
+      </blockquote>
+    ) : (
+      <p class="mt-2 text-[var(--muted)]">
+        Right of reply: open; no response received.
+        Email <a href={replyMailto}>{correctionsEmail()}</a>.
+        Subject is prefilled. Or see <a href={`${base}/methodology#right-of-reply`}>methodology</a>.
+      </p>
+    )}
+  </section>
+
+  {p.timeline.length > 0 && (
+    <section class="mt-12">
+      <h2 class="font-display text-xl m-0">Timeline</h2>
+      <ol class="mt-3 space-y-2 list-none p-0">
+        {p.timeline.map((t) => (
+          <li class="text-sm">
+            <span class="font-tabular text-[var(--muted)]">{t.date}</span>: {t.event}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  {p.controversies.length > 0 && (
+    <section class="mt-12">
+      <h2 class="font-display text-xl m-0">Controversies / contested procedure</h2>
+      {p.controversies.map((c) => (
+        <div class:list={["mt-3", c.label === "procedural" && "contested"]}>
+          <p class="m-0">{c.summary}</p>
+          <p class="m-0 mt-1 text-sm">
+            <a href={c.source} rel="noopener">Source</a>
+            {c.label === "campaign" && <span class="text-[var(--muted)]"> · campaign source</span>}
+          </p>
+        </div>
+      ))}
+    </section>
+  )}
+
+  <section class="mt-12">
+    <h2 class="font-display text-xl m-0">Sources</h2>
+    <ul class="mt-3 text-sm">
+      {p.sources.map((s) => (
+        <li>
+          <a href={s.url} rel="noopener">{s.label}</a>
+          {s.archived && <> · <a href={s.archived}>archive</a></>}
+          {s.note && <span class="text-[var(--muted)]"> ({s.note})</span>}
+        </li>
+      ))}
+    </ul>
+    {p.planning_ref.url && (
+      <p class="text-sm">
+        Planning application{p.planning_ref.id ? ` ${p.planning_ref.id}` : ""}:{" "}
+        <a href={p.planning_ref.url} rel="noopener">live portal</a>
+      </p>
+    )}
+    {!p.planning_ref.url && p.planning_ref.id && (
+      <p class="text-sm text-[var(--muted)]">
+        Planning application reference on record: {p.planning_ref.id}. Link to the live council page not yet verified.
+      </p>
+    )}
+    {!p.planning_ref.url && !p.planning_ref.id && (
+      <p class="text-sm text-[var(--muted)]">
+        No live planning application link recorded yet. We do not upgrade a site past “proposed” without one.
+      </p>
+    )}
+    <p class="text-xs text-[var(--muted)] mt-4">
+      Map point: longitude {lng}, latitude {lat}. Last reviewed {p.last_reviewed}.
+    </p>
+  </section>
+</BaseLayout>

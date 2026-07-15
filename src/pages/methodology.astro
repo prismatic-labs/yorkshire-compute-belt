@@ -1,0 +1,188 @@
+---
+import BaseLayout from "../components/BaseLayout.astro";
+import {
+  formatNumber,
+  HOME_KWH_PER_YEAR,
+  KETTLE_KW,
+  LOAD_FACTOR,
+  LOAD_FACTOR_DISCLOSURE,
+  WATER_LITRES_PER_PERSON_PER_DAY,
+} from "../lib/units";
+import { correctionsMailto } from "../lib/contact";
+import { getConfig } from "../lib/sites";
+
+const config = getConfig();
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const replyMailto = correctionsMailto({ kind: "right-of-reply" });
+const correctionMailto = correctionsMailto();
+---
+
+<BaseLayout title="Methodology" description="How we evidence the physical footprint of AI and cloud infrastructure across Yorkshire and the Humber: stance, conversion factors, and right of reply.">
+  <h1 class="font-display text-3xl m-0 tracking-tight">Methodology</h1>
+  <p class="text-[var(--muted)] mt-2 max-w-2xl">
+    How we choose, label, and correct figures so the physical cost of regional AI and cloud infrastructure
+    stays clear. This page is part of the site itself, not an appendix.
+  </p>
+
+  <section class="mt-12" id="inclusion">
+    <h2 class="font-display text-xl m-0">What we include</h2>
+    <p class="mt-3 max-w-2xl">
+      The map covers the regional compute corridor: very large campuses and other significant
+      data centre proposals in Yorkshire and the Humber. That includes large brownfield and farmland
+      schemes, and smaller heat-reuse sites where they change the local environmental picture (for example
+      Deep Green Bradford). It is not limited to the biggest cloud operators alone.
+    </p>
+  </section>
+
+  <section class="mt-12" id="stance">
+    <h2 class="font-display text-xl m-0">How to read our choices</h2>
+    <p class="mt-3 max-w-2xl">
+      AI and cloud services can look weightless in software. On the ground they mean grid connections,
+      land take, cooling water, and contested planning. This site exists to make that physical footprint
+      across Yorkshire and the Humber visible and comparable. The angle is disclosed, not neutral.
+      Within it the rules are strict: every number is sourced or null; claims are shown as claims;
+      we let sourced figures and side-by-side comparisons make the case, and we avoid loaded adjectives.
+    </p>
+    <p class="max-w-2xl">
+      We lead with stated power size because that is what planning documents and press releases give, and because
+      operators here do not publish load factor (what share of that peak they expect to use day to day).
+      Comparison units (kettles, local geography, homes, water, land) are chosen so communities can feel the
+      scale without a specialist glossary. Evidence that would change a figure: a planning document page,
+      a metered disclosure, or a correction from a named operator via the right-of-reply channel.
+    </p>
+  </section>
+
+  <section class="mt-12" id="evidence">
+    <h2 class="font-display text-xl m-0">Evidence standard</h2>
+    <ul class="mt-3 max-w-2xl">
+      <li>Press releases are not evidence for quantitative site capacity unless corroborated by a planning document.</li>
+      <li>“Sourced” means a specific document and page or paragraph, not merely “the planning portal”.</li>
+      <li>A claim with no published data is labelled <code>no public data</code>.</li>
+      <li>Campaign sources are labelled as campaign sources.</li>
+      <li>No status above <code>proposed</code> without a resolving link to the live planning application.</li>
+      <li>
+        When we add a source, we should also save an archived copy.
+        Gaps are listed on the <a href={`${base}/research`}>Research</a> page and in the data changelog.
+      </li>
+    </ul>
+  </section>
+
+  <section class="mt-12" id="basis">
+    <h2 class="font-display text-xl m-0">Where a figure came from</h2>
+    <dl class="mt-3 grid gap-3 max-w-2xl text-sm">
+      <div><dt class="font-semibold">Operator</dt><dd class="m-0 text-[var(--muted)]">Operator or promoter figure, never presented as verified fact.</dd></div>
+      <div><dt class="font-semibold">Planning</dt><dd class="m-0 text-[var(--muted)]">Taken from a planning application document.</dd></div>
+      <div><dt class="font-semibold">Estimated</dt><dd class="m-0 text-[var(--muted)]">Derived with stated assumptions; shown as a range when more than one assumption is required.</dd></div>
+      <div><dt class="font-semibold">Measured</dt><dd class="m-0 text-[var(--muted)]">Metered or otherwise measured disclosure.</dd></div>
+    </dl>
+  </section>
+
+  <section class="mt-12" id="power">
+    <h2 class="font-display text-xl m-0">Power size is not electricity use</h2>
+    <p class="mt-3 max-w-2xl">
+      When this site says <strong>Power</strong>, it means how large the proposal or grid connection is, in megawatts.
+      That is a size on paper. It is not how much electricity the site will draw while running.
+    </p>
+    <p class="mt-3 max-w-2xl">{LOAD_FACTOR_DISCLOSURE}</p>
+    <ul class="max-w-2xl">
+      <li><strong>Stated power size</strong> (nameplate or contracted): fair for like-for-like power comparisons only (for example kettles). Measured in megawatts (MW).</li>
+      <li><strong>Assumed average use</strong>: stated size × {Math.round(LOAD_FACTOR.low * 100)}-{Math.round(LOAD_FACTOR.high * 100)}% load factor. All energy comparisons use this, always as a range.</li>
+      <li><strong>Measured energy</strong>: supersedes assumptions when available.</li>
+    </ul>
+    <p class="text-sm text-[var(--muted)] max-w-2xl">{LOAD_FACTOR.source}</p>
+  </section>
+
+  <section class="mt-12" id="units">
+    <h2 class="font-display text-xl m-0">Conversion factors</h2>
+    <ul class="mt-3 max-w-2xl">
+      <li>
+        <strong>Kettle</strong>: {KETTLE_KW} kilowatts continuous (like-for-like power comparison, not annual use).
+      </li>
+      <li>
+        <strong>Home</strong>: {formatNumber(HOME_KWH_PER_YEAR.value)} kilowatt-hours per year.
+        Source: {HOME_KWH_PER_YEAR.source}.
+      </li>
+      <li>
+        <strong>Local geography</strong>: Department for Energy Security and Net Zero (DESNZ) subnational
+        electricity consumption at local-authority level.
+        Download the <a href={`${base}/data/local_consumption.json`}>local consumption figures</a>.
+      </li>
+      <li>
+        <strong>Water</strong>: {WATER_LITRES_PER_PERSON_PER_DAY.value} litres per person per day.
+        Source: {WATER_LITRES_PER_PERSON_PER_DAY.source}. Olympic swimming pool as a secondary unit.
+      </li>
+      <li>
+        <strong>Land</strong>: acres to football pitches (Football Association pitch about 105×68 metres,
+        roughly 1.76 acres). Wheat-foregone only where Agricultural Land Classification (ALC) grades support
+        a yield comparison. Best and most versatile (BMV) farmland is grades 1, 2, and 3a.
+      </li>
+      <li>
+        <strong>Drax biomass</strong>: pellet tonnes and forestry hectares as ranges.
+        No tree counts in this version.
+      </li>
+    </ul>
+  </section>
+
+  <section class="mt-12" id="circles">
+    <h2 class="font-display text-xl m-0">Circle scaling</h2>
+    <p class="mt-3 max-w-2xl">
+      Map circles scale by the best available power size in fixed priority:
+      largest size in the proposal, then grid connection applied for, then first build phase only.
+      Each site page states which was used. On the map, circle size is compressed so a 5.6&nbsp;MW site
+      remains clickable beside a 1&nbsp;gigawatt (1,000&nbsp;MW) proposal; the scale bar shows that.
+      Sites with no disclosed power render as hollow dashed circles sized by site area (acres).
+      The compare view draws circles so area matches megawatts (twice the power looks twice as large).
+    </p>
+  </section>
+
+  <section class="mt-12" id="right-of-reply">
+    <h2 class="font-display text-xl m-0">Standing right of reply</h2>
+    <p class="mt-3 max-w-2xl">
+      Any named operator or developer may respond to any figure or claim on this site.
+      Responses are published in full on the relevant site page, with the date they were received.
+      Send responses to <a href={replyMailto}>{config.contact.corrections_email}</a>.
+      Suggested subject: “Yorkshire Compute Belt: right of reply”.
+      Or open a <a href={config.contact.github_issues}>GitHub issue</a>.
+      Site pages show “Right of reply: open; no response received” rather than silence.
+    </p>
+  </section>
+
+  <section class="mt-12" id="corrections">
+    <h2 class="font-display text-xl m-0">Corrections policy</h2>
+    <p class="mt-3 max-w-2xl">
+      Material errors are corrected in the data file and noted in the repository’s
+      <code>data/CHANGELOG.md</code> (visible before launch, updated with each correction).
+      Prefer a planning-document page citation. Councillors and people in affected communities without
+      a GitHub account can email <a href={correctionMailto}>{config.contact.corrections_email}</a>.
+      Suggested subject: “Yorkshire Compute Belt: correction”.
+      Nothing on the public site writes the data file directly; every tip is checked by editors first.
+    </p>
+  </section>
+
+  <section class="mt-12" id="updates">
+    <h2 class="font-display text-xl m-0">How fresh the figures are</h2>
+    <p class="mt-3 max-w-2xl">
+      Each site shows when we last reviewed its figures. If the typical review age across the map goes past
+      {config.staleness_banner_days} days, a banner appears site-wide so outdated data is obvious, not quietly wrong.
+    </p>
+  </section>
+
+  <section class="mt-12" id="claims">
+    <h2 class="font-display text-xl m-0">Claim statuses</h2>
+    <p class="mt-3 max-w-2xl">
+      On each site page, operator claims carry a status about the public record: unverified, no public data,
+      or no longer stated. That describes what is published, not a verdict that the claim is true or false.
+    </p>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="font-display text-xl m-0">Open data</h2>
+    <p class="mt-3 max-w-2xl">
+      Sites ship as GeoJSON (<code>data/sites.geojson</code>), coordinates <code>[longitude, latitude]</code>.
+      Schema versioned from day one. Region config lives in <code>data/config.json</code>.
+      Download: <a href={`${base}/data/sites.geojson`}>sites.geojson</a>,
+      <a href={`${base}/data/schema.json`}>schema</a>,
+      <a href={`${base}/data/local_consumption.json`}>local consumption</a>.
+    </p>
+  </section>
+</BaseLayout>

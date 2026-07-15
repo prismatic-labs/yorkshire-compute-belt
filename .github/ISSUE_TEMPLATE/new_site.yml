@@ -1,0 +1,37 @@
+name: New site
+description: Propose a data centre site for the review queue
+title: "[New site]: "
+labels: ["new-site", "review-queue"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Site name
+    validations:
+      required: true
+  - type: input
+    id: operator
+    attributes:
+      label: Operator / developer
+    validations:
+      required: true
+  - type: input
+    id: authority
+    attributes:
+      label: Local planning authority
+    validations:
+      required: true
+  - type: input
+    id: planning
+    attributes:
+      label: Planning reference and URL
+      description: Required for any status above proposed
+    validations:
+      required: true
+  - type: textarea
+    id: facts
+    attributes:
+      label: Key facts to verify
+      description: Power, land, water, status — with document + page where known
+    validations:
+      required: true

@@ -1,0 +1,117 @@
+@import "tailwindcss";
+@import "@fontsource/familjen-grotesk/latin-500.css";
+@import "@fontsource/familjen-grotesk/latin-600.css";
+@import "@fontsource/familjen-grotesk/latin-700.css";
+@import "@fontsource/source-sans-3/latin-400.css";
+@import "@fontsource/source-sans-3/latin-600.css";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+@layer base {
+  :root {
+    --paper: #f7f6f2;
+    --ink: #1a1d1f;
+    --muted: #5c636a;
+    --line: #d8d4cb;
+    --umber: #8a7355;
+    --grid-blue: #1d5ddb;
+    --amber: #c47a12;
+    --amber-bg: #f6ebd8;
+    --map-panel: rgba(247, 246, 242, 0.96);
+  }
+
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Sans 3", "Source Sans Pro", ui-sans-serif, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse 80% 50% at 100% 0%, rgba(138, 115, 85, 0.06), transparent 55%),
+      radial-gradient(ellipse 60% 40% at 0% 100%, rgba(29, 93, 219, 0.04), transparent 50%),
+      var(--paper);
+  }
+
+  a {
+    color: var(--grid-blue);
+    text-underline-offset: 2px;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Keep inline code from reading as jammed against adjacent punctuation. */
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    padding: 0.05em 0.25em;
+    border-radius: 2px;
+    background: rgba(26, 29, 31, 0.05);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--grid-blue);
+    outline-offset: 2px;
+  }
+
+  .font-display {
+    font-family: "Familjen Grotesk", "Gill Sans", ui-sans-serif, sans-serif;
+  }
+
+  .font-tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .wordmark {
+    font-family: "Familjen Grotesk", "Gill Sans", ui-sans-serif, sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .wordmark:hover {
+    color: var(--ink);
+  }
+
+  .basis-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px dotted var(--line);
+    text-decoration: none;
+    vertical-align: super;
+    margin-left: 0.2em;
+  }
+
+  .basis-tag:hover {
+    color: var(--grid-blue);
+  }
+
+  .contested {
+    background: var(--amber-bg);
+    border-left: 3px solid var(--amber);
+    padding: 0.65rem 0.9rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

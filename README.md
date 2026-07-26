@@ -41,7 +41,7 @@ Base path for GitHub Pages: `/yorkshire-compute-belt`.
 
 Contributions: GitHub Issue Forms and email `marco@prismaticlabs.ai` (subject: `Yorkshire Compute Belt: correction`). Review queue only; nothing writes the data store from the public.
 
-## Prior art
+## More from Prismatic Labs
 
 [Cloud Kettle Index](https://prismatic-labs.github.io/cloud-kettle-index/) · [CULM](https://prismatic-labs.github.io/culm/)
 

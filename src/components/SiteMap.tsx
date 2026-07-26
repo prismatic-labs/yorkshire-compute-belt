@@ -72,6 +72,8 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     mapRef.current = map;
+    // Stable Map instance captured for the cleanup below (lint: ref may change by teardown).
+    const markers = markersRef.current;
 
     map.on("load", () => {
       for (const site of sites) {
@@ -111,7 +113,7 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
     });
 
     return () => {
-      markersRef.current.clear();
+      markers.clear();
       map.remove();
       mapRef.current = null;
     };
@@ -119,7 +121,7 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
 
   useEffect(() => {
     for (const { marker, corridor } of markersRef.current.values()) {
-      const el = marker.getElement();
+      const el = marker.getElement() as HTMLButtonElement;
       el.style.display = visibleCorridors[corridor] ? "" : "none";
       el.disabled = !visibleCorridors[corridor];
     }

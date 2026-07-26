@@ -1005,6 +1005,77 @@
         ],
         "last_reviewed": "2026-07-15"
       }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.5393,
+          53.7888
+        ]
+      },
+      "properties": {
+        "id": "aql-leeds",
+        "name": "aql Leeds data centres",
+        "operator": "aql",
+        "status": "operating",
+        "local_authority": "Leeds City Council",
+        "corridor": "yorkshire",
+        "planning_ref": {
+          "id": null,
+          "url": null
+        },
+        "summary": "Yorkshire's established carrier-neutral colocation operator, running Tier 3+ data centres in central Leeds (Hunslet Road DC1/DC2/DC3, including the converted Salem Chapel) plus DC5 at Apex Way, operating since 2006. Home of IXLeeds, the only independent internet exchange in the UK outside London. A city-centre colocation and peering hub rather than a hyperscale build; the location pin is approximate for the Hunslet Road cluster.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": null,
+          "max_proposed_mw": null
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": null,
+          "previous_use": "Central Leeds buildings, including the former Salem Chapel",
+          "land_type": "brownfield",
+          "alc_grades": null
+        },
+        "grid_connection": null,
+        "cooling": null,
+        "claims_on_record": [],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2006",
+            "event": "aql opens its first Leeds data centre (Hunslet Road carrier hub)",
+            "source": "https://aql.com/colocation/"
+          },
+          {
+            "date": "2010-09",
+            "event": "IXLeeds launched, hosted in aql's central Leeds data centres",
+            "source": "https://aql.com/products/ixleeds/"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "aql: colocation / Leeds data centres",
+            "url": "https://aql.com/colocation/",
+            "archived": null
+          },
+          {
+            "label": "aql: IXLeeds internet exchange",
+            "url": "https://aql.com/products/ixleeds/",
+            "archived": null
+          },
+          {
+            "label": "DCD: aql expands in disused Leeds office",
+            "url": "https://www.datacenterdynamics.com/en/news/aql-to-expand-in-disused-leeds-office/",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-26"
+      }
     }
   ]
 }

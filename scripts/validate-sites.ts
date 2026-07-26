@@ -44,7 +44,15 @@ for (const feature of data.features ?? []) {
   }
 
   if (ABOVE.has(p.status)) {
-    if (!p.planning_ref?.url) {
+    // "operating" and "decommissioned" are facts about the building, evidenced by
+    // any resolving source; the planning milestones still need a live application URL.
+    const factual = p.status === "operating" || p.status === "decommissioned";
+    if (factual) {
+      const hasSourceUrl = (p.sources ?? []).some((s: { url?: string }) => s.url);
+      if (!p.planning_ref?.url && !hasSourceUrl) {
+        errors.push(`${p.id}: status "${p.status}" requires a resolving source URL`);
+      }
+    } else if (!p.planning_ref?.url) {
       errors.push(`${p.id}: status "${p.status}" requires planning_ref.url`);
     } else if (
       /search\.do/i.test(p.planning_ref.url) &&

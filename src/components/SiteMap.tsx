@@ -1,8 +1,10 @@
 import { useEffect, useId, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
+import type { FeatureCollection } from "geojson";
 import type { Corridor, SiteFeature } from "../lib/types";
 import { circleScale, mapRadiusMetres, statusColour } from "../lib/mapScale";
 import { formatNumber, powerKindLabel, bestPower } from "../lib/units";
+import { AIGZ_ZONES } from "../lib/aigz";
 
 interface Props {
   sites: SiteFeature[];
@@ -43,6 +45,30 @@ const ALL_VISIBLE: CorridorVisibility = {
   teesside: true,
 };
 
+// Okabe-Ito reddish-purple — distinct from every planning-status colour on the map.
+const ZONE_COLOUR = "#CC79A7";
+
+/** Indicative circle (not an official boundary) around a bid's lead site. */
+function circleRing([lng, lat]: [number, number], radiusKm: number, points = 64): number[][] {
+  const dLat = radiusKm / 110.574;
+  const dLng = radiusKm / (111.32 * Math.cos((lat * Math.PI) / 180));
+  const ring: number[][] = [];
+  for (let i = 0; i <= points; i++) {
+    const a = (i / points) * 2 * Math.PI;
+    ring.push([lng + dLng * Math.cos(a), lat + dLat * Math.sin(a)]);
+  }
+  return ring;
+}
+
+const AIGZ_GEO: FeatureCollection = {
+  type: "FeatureCollection",
+  features: AIGZ_ZONES.map((z) => ({
+    type: "Feature",
+    properties: { id: z.id, name: z.name },
+    geometry: { type: "Polygon", coordinates: [circleRing(z.centre, z.radiusKm)] },
+  })),
+};
+
 export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -53,8 +79,10 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
   const [visibleCorridors, setVisibleCorridors] =
     useState<CorridorVisibility>(ALL_VISIBLE);
   const [zoomFocus, setZoomFocus] = useState<ZoomFocus>("all");
+  const [showZones, setShowZones] = useState(false);
   const visibleCorridorsRef = useRef(visibleCorridors);
   visibleCorridorsRef.current = visibleCorridors;
+  const zoneMarkersRef = useRef<maplibregl.Marker[]>([]);
   const panelId = useId();
 
   useEffect(() => {
@@ -74,6 +102,7 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
     mapRef.current = map;
     // Stable Map instance captured for the cleanup below (lint: ref may change by teardown).
     const markers = markersRef.current;
+    const zoneMarkers = zoneMarkersRef.current;
 
     map.on("load", () => {
       for (const site of sites) {
@@ -110,14 +139,55 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
           corridor: site.properties.corridor,
         });
       }
+
+      // AI Growth Zone bid overlay — hidden until toggled on.
+      map.addSource("aigz", { type: "geojson", data: AIGZ_GEO });
+      map.addLayer({
+        id: "aigz-fill",
+        type: "fill",
+        source: "aigz",
+        layout: { visibility: "none" },
+        paint: { "fill-color": ZONE_COLOUR, "fill-opacity": 0.1 },
+      });
+      map.addLayer({
+        id: "aigz-line",
+        type: "line",
+        source: "aigz",
+        layout: { visibility: "none", "line-join": "round" },
+        paint: { "line-color": ZONE_COLOUR, "line-width": 2, "line-dasharray": [2, 1.5] },
+      });
+      // Labels as DOM markers (no dependency on the basemap's glyph set).
+      for (const zone of AIGZ_ZONES) {
+        const el = document.createElement("span");
+        el.className = "ycb-zone-label";
+        el.textContent = `${zone.name} · AIGZ bid`;
+        el.style.display = "none";
+        const marker = new maplibregl.Marker({ element: el, anchor: "center" })
+          .setLngLat(zone.centre)
+          .addTo(map);
+        zoneMarkersRef.current.push(marker);
+      }
     });
 
     return () => {
       markers.clear();
+      zoneMarkers.length = 0;
       map.remove();
       mapRef.current = null;
     };
   }, [sites, center, zoom]);
+
+  // Toggle the AI Growth Zone overlay (fill, outline, and DOM labels).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.getLayer("aigz-fill")) return;
+    const vis = showZones ? "visible" : "none";
+    map.setLayoutProperty("aigz-fill", "visibility", vis);
+    map.setLayoutProperty("aigz-line", "visibility", vis);
+    for (const m of zoneMarkersRef.current) {
+      m.getElement().style.display = showZones ? "" : "none";
+    }
+  }, [showZones]);
 
   useEffect(() => {
     for (const { marker, corridor } of markersRef.current.values()) {
@@ -258,6 +328,26 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
                 );
               })}
             </div>
+            <p className="m-0 mt-2.5 mb-1.5 text-[0.65rem] uppercase tracking-wider text-[var(--muted)]">
+              Overlay
+            </p>
+            <button
+              type="button"
+              aria-pressed={showZones}
+              onClick={() => setShowZones((v) => !v)}
+              className="rounded border px-2 py-1 text-[0.7rem] leading-none cursor-pointer transition-colors"
+              style={{
+                borderColor: showZones ? ZONE_COLOUR : "var(--line)",
+                background: showZones ? ZONE_COLOUR : "transparent",
+                color: showZones ? "#ffffff" : "var(--muted)",
+              }}
+            >
+              AI Growth Zone bids
+            </button>
+            <p className="m-0 mt-1.5 text-[0.65rem] leading-snug text-[var(--muted)]">
+              Live bids drawn as indicative areas. None is designated yet.{" "}
+              <a href={`${baseUrl}/methodology#aigz`} className="underline">About these bids</a>
+            </p>
           </div>
         </div>
       </div>
@@ -334,6 +424,18 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
 
       <style>{`
         .maplibregl-coop-gesture-screen { background: rgba(247,246,242,0.85) !important; color: #1a1d1f !important; }
+        .ycb-zone-label {
+          white-space: nowrap;
+          padding: 2px 7px;
+          border-radius: 9999px;
+          background: ${ZONE_COLOUR};
+          color: #ffffff;
+          font-size: 0.6rem;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+          pointer-events: none;
+        }
       `}</style>
     </div>
   );

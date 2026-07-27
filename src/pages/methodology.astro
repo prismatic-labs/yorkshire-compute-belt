@@ -10,6 +10,7 @@ import {
 } from "../lib/units";
 import { correctionsMailto } from "../lib/contact";
 import { getConfig } from "../lib/sites";
+import { AIGZ_ZONES } from "../lib/aigz";
 
 const config = getConfig();
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -145,6 +146,26 @@ const correctionMailto = correctionsMailto();
       Outline style (solid vs dashed) is separate: whether megawatts are disclosed.
       The compare view draws circles so area matches megawatts (twice the power looks twice as large).
     </p>
+  </section>
+
+  <section class="mt-12" id="aigz">
+    <h2 class="font-display text-xl m-0">AI Growth Zone overlay</h2>
+    <p class="mt-3 max-w-2xl">
+      The optional overlay on the map shows where AI Growth Zones (AIGZ) are being sought across the region.
+      None of them is designated. As of July 2026 the confirmed UK zones are Oxfordshire, the North East,
+      North Wales, South Wales, and Scotland (see the
+      <a href="https://www.gov.uk/government/collections/ai-growth-zones" rel="noopener noreferrer">GOV.UK register</a>);
+      the three below are live bids. Each is drawn as an indicative circle around the bid's lead site, so the
+      shaded area shows an approximate location rather than an official boundary.
+    </p>
+    <ul class="mt-3 max-w-2xl space-y-2">
+      {AIGZ_ZONES.map((z) => (
+        <li>
+          <strong>{z.name}</strong> (bid). {z.lead}. {z.note}{" "}
+          <a href={z.source.url} rel="noopener noreferrer">{z.source.title}</a>.
+        </li>
+      ))}
+    </ul>
   </section>
 
   <section class="mt-12" id="right-of-reply">

@@ -58,6 +58,19 @@ export const AIGZ_ZONES: AigzZone[] = [
       url: "https://www.northlincs.gov.uk/news/council-bids-to-bring-artificial-intelligence-growth-zone-to-northern-lincolnshire",
     },
   },
+  {
+    id: "teesside",
+    name: "Teesside",
+    status: "bid",
+    lead: "Teesworks freeport, near Middlesbrough",
+    centre: [-1.13, 54.58],
+    radiusKm: 10,
+    note: "Candidate championed by the Tees Valley Combined Authority, centred on a large data-centre proposal on the former Teesworks steelworks.",
+    source: {
+      title: "Place North East",
+      url: "https://www.placenortheast.co.uk/teesside-tapped-for-ai-growth-zone/",
+    },
+  },
 ];
 
 /** No Yorkshire/Humber zone is designated; these are bids. Shown when the layer is on. */

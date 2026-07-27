@@ -45,8 +45,9 @@ const ALL_VISIBLE: CorridorVisibility = {
   teesside: true,
 };
 
-// Okabe-Ito reddish-purple — distinct from every planning-status colour on the map.
-const ZONE_COLOUR = "#CC79A7";
+// Magenta, deliberately outside the planning-status palette (which already uses the
+// Okabe-Ito reddish-purple for "in planning"), so the policy overlay never reads as a status.
+const ZONE_COLOUR = "#C2185B";
 
 /** Indicative circle (not an official boundary) around a bid's lead site. */
 function circleRing([lng, lat]: [number, number], radiusKm: number, points = 64): number[][] {

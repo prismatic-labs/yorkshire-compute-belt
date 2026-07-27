@@ -45,9 +45,10 @@ const ALL_VISIBLE: CorridorVisibility = {
   teesside: true,
 };
 
-// Magenta, deliberately outside the planning-status palette (which already uses the
-// Okabe-Ito reddish-purple for "in planning"), so the policy overlay never reads as a status.
-const ZONE_COLOUR = "#C2185B";
+// Deep indigo — well clear of the whole warm status palette (stone, reddish-purple,
+// ochre, green, blue, vermillion). Rendered as a diagonal hatch (below) as well, so the
+// policy overlay never reads as a solid status pin even at a glance.
+const ZONE_COLOUR = "#3730A3";
 
 /** Indicative circle (not an official boundary) around a bid's lead site. */
 function circleRing([lng, lat]: [number, number], radiusKm: number, points = 64): number[][] {
@@ -143,12 +144,32 @@ export default function SiteMap({ sites, baseUrl, center, zoom }: Props) {
 
       // AI Growth Zone bid overlay — hidden until toggled on.
       map.addSource("aigz", { type: "geojson", data: AIGZ_GEO });
+      // Diagonal-hatch tile (2x for retina) so the fill reads as an indicative overlay.
+      if (!map.hasImage("aigz-hatch")) {
+        const s = 16;
+        const cvs = document.createElement("canvas");
+        cvs.width = s;
+        cvs.height = s;
+        const ctx = cvs.getContext("2d");
+        if (ctx) {
+          ctx.strokeStyle = ZONE_COLOUR;
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+          ctx.moveTo(0, s);
+          ctx.lineTo(s, 0);
+          ctx.stroke();
+          const { data, width, height } = ctx.getImageData(0, 0, s, s);
+          map.addImage("aigz-hatch", { width, height, data: new Uint8Array(data) }, { pixelRatio: 2 });
+        }
+      }
       map.addLayer({
         id: "aigz-fill",
         type: "fill",
         source: "aigz",
         layout: { visibility: "none" },
-        paint: { "fill-color": ZONE_COLOUR, "fill-opacity": 0.1 },
+        paint: map.hasImage("aigz-hatch")
+          ? { "fill-pattern": "aigz-hatch", "fill-opacity": 0.9 }
+          : { "fill-color": ZONE_COLOUR, "fill-opacity": 0.12 },
       });
       map.addLayer({
         id: "aigz-line",

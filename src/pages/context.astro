@@ -1,0 +1,280 @@
+---
+import BaseLayout from "../components/BaseLayout.astro";
+import { getSites, siteBestPower } from "../lib/sites";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+// Live totals so the prose cannot drift from the data file.
+// Stated build-out is every mapped site's best-available power, running and
+// proposed. Land split counts only sites that disclose an area.
+let statedMw = 0;
+let farmlandAcres = 0;
+let brownfieldAcres = 0;
+for (const f of getSites()) {
+  const best = siteBestPower(f.properties);
+  if (best) statedMw += best.quantity.value;
+  const land = f.properties.land;
+  const acres = land.acres ? land.acres.value : 0;
+  if (land.land_type === "agricultural") farmlandAcres += acres;
+  else if (land.land_type === "brownfield") brownfieldAcres += acres;
+}
+const statedGw = (statedMw / 1000).toFixed(1);
+
+// Scale comparison — cluster vs cluster, but two different measurements.
+// Yorkshire: total STATED build-out on this map (running + proposed).
+// Loudoun: MEASURED county-wide data-centre power consumption (2025).
+const COMPARE = [
+  {
+    id: "yorkshire",
+    label: "Yorkshire, the Humber and Teesside, all mapped sites",
+    detail: `≈${statedGw} GW stated (running + proposed)`,
+    barLabel: `${statedGw} GW`,
+    mw: statedMw,
+    colour: "#0072B2",
+    year: "2026 map",
+  },
+  {
+    id: "loudoun",
+    label: "Loudoun County, Virginia",
+    detail: "5.33 GW measured cluster load (2025)",
+    barLabel: "5.33 GW",
+    mw: 5330,
+    colour: "#E69F00",
+    year: "2025",
+  },
+];
+const compareMax = Math.max(...COMPARE.map((c) => c.mw));
+const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
+---
+
+<BaseLayout
+  title="Context"
+  description="How data centres across Yorkshire, the Humber and Teesside press on power, water, jobs, noise and land: sourced UK evidence, US precedents, and mitigations on record."
+>
+  <h1 class="font-display text-3xl m-0 tracking-tight">Context</h1>
+  <p class="text-[var(--muted)] mt-2 max-w-2xl">
+    The map plots sites and sourced figures. This page sets out the pressures those sites put on grids and
+    communities, what US regions already show at larger scale, and mitigations already appearing in regional
+    dossiers. Benefits sit next to costs. Every claim below is linked or cited; if we cannot source it, we
+    cut it.
+  </p>
+  <p class="text-sm text-[var(--muted)] mt-3 max-w-2xl">
+    Stance matches the rest of the site: disclosed, not neutral. See
+    <a href={`${base}/methodology`}>methodology</a>.
+  </p>
+
+  <!-- 1. Power -->
+  <section class="mt-12" id="power">
+    <h2 class="font-display text-xl m-0">Power and the grid</h2>
+    <p class="mt-3 max-w-2xl">
+      Data centres take large, steady electricity loads. Where the local grid is already tight, new
+      connections for other uses can wait years.
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <strong>Yorkshire.</strong> The corridor’s defining pattern is reuse of retired coal-power sites and
+      the grid connections they leave behind:
+      <a href={`${base}/site/skelton-grange`}>Skelton Grange</a> (former 800 MW coal station),
+      <a href={`${base}/site/eggborough`}>Eggborough</a> (former 1,960 MW station, closed 2018), and
+      <a href={`${base}/site/ferrybridge`}>Mountpark Ferrybridge</a> (former Ferrybridge C coal stock yard).
+      <a href={`${base}/site/drax`}>Drax</a> states its first phase would reuse the grid connection that
+      served coal generation. Where new load is added on farmland instead, it is large:
+      <a href={`${base}/site/elsham`}>Elsham Tech Park</a> lists an on-site energy-centre parameter of up to
+      about 49.9 MW alongside up to 1 GW of IT load (North Lincolnshire Council committee report PA/2025/643).
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <strong>US.</strong> Northern Virginia’s “Data Center Alley” is the world’s densest cluster. Loudoun
+      County alone reported about <strong>5.33 GW</strong> of data-centre power consumption in 2025, up from
+      about 2.0 GW in 2021, and Dominion Energy has reported tens of gigawatts under contract across its
+      Virginia service area.
+      (<a href="https://www.loudoun.gov/DocumentCenter/View/217605/Loudoun-County-Data-Center-Brief---Turner" rel="noopener noreferrer">Loudoun County brief, 2025</a>;
+      <a href="https://www.datacenterdynamics.com/en/news/dominion-energy-nearly-doubles-data-center-capacity-under-contract-to-40gw/" rel="noopener noreferrer">DCD on Dominion’s contract pipeline, 2025</a>.)
+      Read it as scale, not as identical grid conditions to the north of England.
+    </p>
+    <p class="mt-3 text-sm max-w-2xl">
+      <strong>Mitigations on record here:</strong> reuse of existing coal-station grid connections rather
+      than new greenfield ones (<a href={`${base}/site/drax`}>Drax</a>,
+      <a href={`${base}/site/skelton-grange`}>Skelton Grange</a>,
+      <a href={`${base}/site/eggborough`}>Eggborough</a>,
+      <a href={`${base}/site/ferrybridge`}>Ferrybridge</a>), and substation plus battery storage listed in
+      the reserved-matters description at <a href={`${base}/site/teesworks`}>Teesworks</a>.
+    </p>
+  </section>
+
+  <!-- 2. Water -->
+  <section class="mt-12" id="water">
+    <h2 class="font-display text-xl m-0">Water</h2>
+    <p class="mt-3 max-w-2xl">
+      Cooling can use large volumes of potable water. UK operators are
+      <strong>not required to disclose</strong> water use, so most dossiers here show water as not disclosed,
+      not as zero. Full method note: <a href={`${base}/methodology#units`}>methodology § conversion factors</a>.
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <strong>UK.</strong> An April 2026 Global Action Plan analysis reported that about <strong>84%</strong>
+      of proposed UK data centres sit in areas already water-stressed or projected to be by 2040
+      (<a href="https://www.watermagazine.co.uk/2026/04/27/84-of-proposed-uk-data-centres-to-be-built-in-water-stressed-areas/" rel="noopener noreferrer">Water Magazine</a>).
+      Water UK has told Parliament that some proposed centres have requested up to about
+      <strong>three million litres a day</strong>, and that the sector’s demand is not built into national
+      water planning
+      (<a href="https://www.theguardian.com/environment/2026/jul/21/not-enough-water-for-uks-datacentre-plans-trade-body-says" rel="noopener noreferrer">Guardian / Water UK, Jul 2026</a>).
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <strong>US.</strong> In The Dalles, Oregon, a public-records fight over Google’s data-centre water use
+      ended in a 2022 settlement that forced disclosure; later reporting showed Google taking a large share
+      of city water as campuses expanded
+      (<a href="https://www.oregonlive.com/silicon-forest/2022/12/the-dalles-settles-public-records-lawsuit-over-googles-data-centers-will-disclose-water-use.html" rel="noopener noreferrer">Oregonian, Dec 2022</a>;
+      <a href="https://oregoncapitalchronicle.com/2026/01/19/as-googles-water-demands-grow-the-dalles-aims-to-pull-more-from-mount-hood-forest/" rel="noopener noreferrer">Oregon Capital Chronicle, Jan 2026</a>).
+      Treat these as precedents for disclosure politics, not as identical hydrology to the region.
+    </p>
+    <p class="mt-3 text-sm max-w-2xl">
+      <strong>Mitigations on record here:</strong>
+      <a href={`${base}/site/deep-green-bradford`}>Deep Green Bradford</a> claims closed-loop cooling with up
+      to 95% heat reuse into the Bradford Energy Network and zero water use; air or outside-air cooling is
+      claimed at <a href={`${base}/site/skelton-grange`}>Skelton Grange</a> and
+      <a href={`${base}/site/wilton-international`}>Wilton International</a>. All are claims until metered.
+      Waterless on site still shifts water to the power station through higher electricity use.
+    </p>
+  </section>
+
+  <!-- 3. Jobs -->
+  <section class="mt-12" id="jobs">
+    <h2 class="font-display text-xl m-0">Jobs and the local economy</h2>
+    <p class="mt-3 max-w-2xl">
+      Promoters emphasise capital investment, business rates, and construction employment. Permanent on-site
+      staffing is usually small relative to the land and power take. Site-level operational headcounts are
+      not disclosed in the planning materials reviewed here, and several schemes sit inside AI Growth Zone
+      bids that promise regional jobs (<a href={`${base}/methodology#aigz`}>AI Growth Zone overlay</a>).
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <strong>Benefit side.</strong> The same facilities underpin cloud and AI services used across the wider
+      economy. That benefit is real. It is also spread thin: rates and construction jobs stay local, but most
+      of the digital gain is used nationally. We do not score “net public value” on this site.
+    </p>
+  </section>
+
+  <!-- 4. Noise -->
+  <section class="mt-12" id="noise">
+    <h2 class="font-display text-xl m-0">Noise and health</h2>
+    <p class="mt-3 max-w-2xl">
+      Continuous cooling plant and periodic diesel (or other) generator testing are among the impacts
+      residents cite most often in objections elsewhere. Emissions from testing add an air-quality concern
+      beside noise.
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <strong>US.</strong> Suburban complaints in Northern Virginia and places such as Chandler, Arizona,
+      have turned on overnight noise and generator exercises. The pattern is useful: once campuses sit beside
+      housing, acoustic conditions become a planning lever. No noise objection is yet on record in the
+      dossiers mapped here.
+    </p>
+    <p class="mt-3 text-sm max-w-2xl">
+      <strong>Mitigations:</strong> planning conditions on plant enclosure, hours for generator testing,
+      acoustic barriers, and (where proposed) HVO or electric backup. Check each dossier’s planning documents
+      rather than assuming a regional standard.
+    </p>
+  </section>
+
+  <!-- 5. Land -->
+  <section class="mt-12" id="land">
+    <h2 class="font-display text-xl m-0">Land</h2>
+    <p class="mt-3 max-w-2xl">
+      The build-out here splits between brownfield reuse of retired coal-power sites
+      (<a href={`${base}/site/skelton-grange`}>Skelton Grange</a>,
+      <a href={`${base}/site/eggborough`}>Eggborough</a>,
+      <a href={`${base}/site/ferrybridge`}>Ferrybridge</a>,
+      <a href={`${base}/site/teesworks`}>Teesworks</a>,
+      <a href={`${base}/site/aql-leeds`}>aql Leeds</a>) and farmland schemes on the fringe
+      (<a href={`${base}/site/elsham`}>Elsham</a>, <a href={`${base}/site/humber-tech-park`}>Humber Tech Park</a>).
+      Across sites that disclose an area, farmland accounts for about {farmlandAcres} acres and ex-industrial
+      land about {brownfieldAcres}. Brownfield-first is the usual mitigation in policy language; loss of
+      farmland, especially best and most versatile land, is decided case by case.
+    </p>
+    <p class="mt-3 max-w-2xl" id="land-question">
+      <strong>The land question.</strong> A consent commits a piece of land to one long-term use. A scheme
+      can turn working farmland into a fenced, single-use site that takes large power and water; how many
+      permanent local jobs it supports is not disclosed in the planning materials here
+      (<a href="#jobs">jobs</a>). Elsham Tech Park would permanently take over 430 acres, roughly 140
+      hectares of it best and most versatile farmland (grades 1, 2 and 3a), for up to 1 GW of IT load
+      (North Lincolnshire Council committee report PA/2025/643). Once built it is hard to undo; a hall of
+      racks and cooling plant does not go back to being a field.
+    </p>
+    <p class="mt-3 max-w-2xl" id="rival-claims">
+      <strong>Rival claims on scarce capacity.</strong> Land, grid headroom, and water are shared resources,
+      and a data centre’s claim on each one competes with other uses. At
+      <a href={`${base}/site/teesworks`}>Teesworks</a> the data-centre campus land overlapped BP’s
+      H2Teesside hydrogen scheme; both were framed as nationally significant until BP withdrew H2Teesside in
+      December 2025
+      (<a href="https://www.bbc.co.uk/news/articles/cn43x9042kwo" rel="noopener noreferrer">BBC</a>).
+      Farmland, once consented, is spent: the objections at
+      <a href={`${base}/site/elsham`}>Elsham</a> turn on the permanent loss of productive best-and-most-versatile
+      land (PA/2025/643).
+    </p>
+    <p class="mt-3 max-w-2xl" id="who-carries-the-cost">
+      <strong>Who carries the cost.</strong> The local costs concentrate: the farmland itself, the noise, the
+      traffic, and sometimes water use fall on the immediate area. Most of the benefit is national: the cloud
+      and AI capacity these sites host is used across the economy, not mainly nearby
+      (<a href="#jobs">jobs</a>). Opponents call this a land-justice problem.
+    </p>
+    <p class="mt-3 max-w-2xl">
+      <strong>Benefits.</strong> The strongest case here is the brownfield route. Reusing retired coal-power
+      land — <a href={`${base}/site/skelton-grange`}>Skelton Grange</a>,
+      <a href={`${base}/site/eggborough`}>Eggborough</a>, and
+      <a href={`${base}/site/ferrybridge`}>Ferrybridge</a> — puts derelict industrial sites and their
+      existing grid connections back to work, and raises no farmland question at all. Clustering compute near
+      that infrastructure can also lower connection cost.
+    </p>
+  </section>
+
+  <!-- 6. Yorkshire vs US -->
+  <section class="mt-12" id="yorkshire-vs-us">
+    <h2 class="font-display text-xl m-0">How the region compares with the US</h2>
+    <p class="mt-3 max-w-2xl">
+      Single US AI and cloud campuses are often quoted in the <strong>multi-gigawatt</strong> range, and
+      Loudoun County’s measured cluster load alone was about <strong>5.33 GW in 2025</strong>. The whole
+      mapped build-out here, running plus proposed, is about <strong>{statedGw} GW</strong> stated; its
+      largest single figures are around <strong>1 GW</strong> (Elsham’s IT-load parameter and Drax’s
+      longer-term ambition), and both are stated ceilings, not consented running loads. The region is smaller
+      per site and more constrained on farmland and grid headroom, so friction such as farmland loss, grid
+      reuse, and land conflicts like Teesworks shows up at lower absolute megawatts.
+    </p>
+
+    <div class="mt-6 space-y-4" role="img"
+      aria-label={`Scale comparison: the region's whole mapped build-out about ${statedGw} gigawatts stated; Loudoun County 2025 measured cluster load 5.33 gigawatts.`}>
+      {COMPARE.map((row) => (
+        <div>
+          <div class="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+            <p class="m-0 font-medium">{row.label}</p>
+            <p class="m-0 font-tabular text-[var(--muted)]">
+              {row.barLabel}<span class="text-xs"> · {row.year}</span>
+            </p>
+          </div>
+          <p class="m-0 mt-0.5 text-xs text-[var(--muted)]">{row.detail}</p>
+          <div class="mt-2 h-8 rounded overflow-hidden bg-[var(--line)]">
+            <div
+              class="h-full flex items-center px-2 text-xs font-medium text-white whitespace-nowrap"
+              style={`width:${Math.max(pct(row.mw, compareMax), 12)}%;background:${row.colour}`}
+            >
+              {row.barLabel}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <p class="mt-4 text-sm text-[var(--muted)] max-w-2xl">
+      Metric caution: both sides are cluster-scale, but they are not the same measurement. The regional figure
+      is the stated total of every mapped site, running and proposed. Loudoun’s is measured power actually
+      consumed across the county cluster in 2025. Read it as scale, not a like-for-like league table.
+    </p>
+  </section>
+
+  <section class="mt-12 border-t border-[var(--line)] pt-8">
+    <h2 class="font-display text-xl m-0">Use the map</h2>
+    <p class="mt-3 text-sm max-w-2xl">
+      <a href={`${base}/`}>Map</a>
+      · <a href={`${base}/sites`}>Sites</a>
+      · <a href={`${base}/compare`}>Compare</a>
+      · <a href={`${base}/research`}>Research</a>
+      · <a href={`${base}/methodology`}>Methodology</a>
+      · <a href={`${base}/data/sites.geojson`}>GeoJSON</a>
+    </p>
+  </section>
+</BaseLayout>

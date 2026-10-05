@@ -1,18 +1,17 @@
 ---
 import BaseLayout from "../components/BaseLayout.astro";
-import { getSites, siteBestPower } from "../lib/sites";
+import { getSites, regionalTotals } from "../lib/sites";
+import { formatNumber } from "../lib/units";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 // Live totals so the prose cannot drift from the data file.
-// Stated build-out is every mapped site's best-available power, running and
-// proposed. Land split counts only sites that disclose an area.
-let statedMw = 0;
+// Land split counts only sites that disclose an area.
+const totals = regionalTotals();
+const statedMw = totals.disclosedMw;
 let farmlandAcres = 0;
 let brownfieldAcres = 0;
 for (const f of getSites()) {
-  const best = siteBestPower(f.properties);
-  if (best) statedMw += best.quantity.value;
   const land = f.properties.land;
   const acres = land.acres ? land.acres.value : 0;
   if (land.land_type === "agricultural") farmlandAcres += acres;
@@ -21,13 +20,13 @@ for (const f of getSites()) {
 const statedGw = (statedMw / 1000).toFixed(1);
 
 // Scale comparison — cluster vs cluster, but two different measurements.
-// Yorkshire: total STATED build-out on this map (running + proposed).
-// Loudoun: MEASURED county-wide data-centre power consumption (2025).
+// Region: stated sizes of proposed and approved schemes (no running site discloses MW).
+// Loudoun: county-wide data-centre power consumption (2025), per Turner citing Dominion.
 const COMPARE = [
   {
     id: "yorkshire",
     label: "Yorkshire, the Humber and Teesside, all mapped sites",
-    detail: `≈${statedGw} GW stated (running + proposed)`,
+    detail: `≈${statedGw} GW stated on paper for schemes not yet running (${formatNumber(totals.planningMw)} MW in planning documents, ${formatNumber(totals.operatorMw)} MW operator-only)`,
     barLabel: `${statedGw} GW`,
     mw: statedMw,
     colour: "#0072B2",
@@ -36,7 +35,7 @@ const COMPARE = [
   {
     id: "loudoun",
     label: "Loudoun County, Virginia",
-    detail: "5.33 GW measured cluster load (2025)",
+    detail: "5.33 GW data-centre power consumption (2025), Supervisor Mike Turner citing Dominion Energy",
     barLabel: "5.33 GW",
     mw: 5330,
     colour: "#E69F00",
@@ -83,10 +82,11 @@ const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
     </p>
     <p class="mt-3 max-w-2xl">
       <strong>US.</strong> Northern Virginia’s “Data Center Alley” is the world’s densest cluster. Loudoun
-      County alone reported about <strong>5.33 GW</strong> of data-centre power consumption in 2025, up from
-      about 2.0 GW in 2021, and Dominion Energy has reported tens of gigawatts under contract across its
-      Virginia service area.
-      (<a href="https://www.loudoun.gov/DocumentCenter/View/217605/Loudoun-County-Data-Center-Brief---Turner" rel="noopener noreferrer">Loudoun County brief, 2025</a>;
+      County supervisor Mike Turner, citing Dominion Energy figures, puts the county’s data-centre power
+      consumption at about <strong>5.33 GW</strong> in 2025, up from 4.14 GW in 2024 (his earlier years are
+      read off a Dominion chart). The presentation is his own and states it does not represent the county.
+      Dominion Energy has reported tens of gigawatts under contract across its Virginia service area.
+      (<a href="https://www.loudoun.gov/DocumentCenter/View/217605/Loudoun-County-Data-Center-Brief---Turner" rel="noopener noreferrer">Turner, “Data Center Growth”, July 2026</a>;
       <a href="https://www.datacenterdynamics.com/en/news/dominion-energy-nearly-doubles-data-center-capacity-under-contract-to-40gw/" rel="noopener noreferrer">DCD on Dominion’s contract pipeline, 2025</a>.)
       Read it as scale, not as identical grid conditions to the north of England.
     </p>
@@ -112,10 +112,10 @@ const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
       <strong>UK.</strong> An April 2026 Global Action Plan analysis reported that about <strong>84%</strong>
       of proposed UK data centres sit in areas already water-stressed or projected to be by 2040
       (<a href="https://www.watermagazine.co.uk/2026/04/27/84-of-proposed-uk-data-centres-to-be-built-in-water-stressed-areas/" rel="noopener noreferrer">Water Magazine</a>).
-      Water UK has told Parliament that some proposed centres have requested up to about
-      <strong>three million litres a day</strong>, and that the sector’s demand is not built into national
-      water planning
-      (<a href="https://www.theguardian.com/environment/2026/jul/21/not-enough-water-for-uks-datacentre-plans-trade-body-says" rel="noopener noreferrer">Guardian / Water UK, Jul 2026</a>).
+      Affinity Water has said some proposed centres in its region have requested up to about
+      <strong>three million litres a day</strong>, and Water UK warns that the sector’s demand is not built
+      into national water planning
+      (<a href="https://www.theguardian.com/environment/2026/jul/21/not-enough-water-for-uks-datacentre-plans-trade-body-says" rel="noopener noreferrer">Guardian, Jul 2026</a>).
     </p>
     <p class="mt-3 max-w-2xl">
       <strong>US.</strong> In The Dalles, Oregon, a public-records fight over Google’s data-centre water use
@@ -139,10 +139,16 @@ const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
   <section class="mt-12" id="jobs">
     <h2 class="font-display text-xl m-0">Jobs and the local economy</h2>
     <p class="mt-3 max-w-2xl">
-      Promoters emphasise capital investment, business rates, and construction employment. Permanent on-site
-      staffing is usually small relative to the land and power take. Site-level operational headcounts are
-      not disclosed in the planning materials reviewed here, and several schemes sit inside AI Growth Zone
-      bids that promise regional jobs (<a href={`${base}/methodology#aigz`}>AI Growth Zone overlay</a>).
+      Promoters emphasise capital investment, business rates, and construction employment. Some publish
+      permanent job estimates: the applicant for <a href={`${base}/site/elsham`}>Elsham Tech Park</a> claims
+      over 600 permanent jobs after construction (summarised in the North Lincolnshire committee report,
+      PA/2025/643); <a href={`${base}/site/humber-tech-park`}>Humber Tech Park</a>’s planning statement
+      estimates about 370 jobs when fully operational; and
+      <a href={`${base}/site/latos-preston-farm`}>Latos</a> announced 150
+      (<a href="https://www.gazettelive.co.uk/news/teesside-news/stockton-latos-data-centre-jobs-32536147" rel="noopener noreferrer">Teesside Live</a>). These are
+      applicant figures, not measured headcounts, and they are small relative to the land and power take.
+      Several schemes also sit inside AI Growth Zone bids that promise regional jobs
+      (<a href={`${base}/methodology#aigz`}>AI Growth Zone overlay</a>).
     </p>
     <p class="mt-3 max-w-2xl">
       <strong>Benefit side.</strong> The same facilities underpin cloud and AI services used across the wider
@@ -162,8 +168,9 @@ const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
     <p class="mt-3 max-w-2xl">
       <strong>US.</strong> Suburban complaints in Northern Virginia and places such as Chandler, Arizona,
       have turned on overnight noise and generator exercises. The pattern is useful: once campuses sit beside
-      housing, acoustic conditions become a planning lever. No noise objection is yet on record in the
-      dossiers mapped here.
+      housing, acoustic conditions become a planning lever. Here, objectors to
+      <a href={`${base}/site/elsham`}>Elsham Tech Park</a> raised noise from 24/7 operations and
+      low-frequency noise and hum (North Lincolnshire committee report PA/2025/643).
     </p>
     <p class="mt-3 text-sm max-w-2xl">
       <strong>Mitigations:</strong> planning conditions on plant enclosure, hours for generator testing,
@@ -189,9 +196,8 @@ const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
     </p>
     <p class="mt-3 max-w-2xl" id="land-question">
       <strong>The land question.</strong> A consent commits a piece of land to one long-term use. A scheme
-      can turn working farmland into a fenced, single-use site that takes large power and water; how many
-      permanent local jobs it supports is not disclosed in the planning materials here
-      (<a href="#jobs">jobs</a>). Elsham Tech Park would permanently take over 430 acres, roughly 140
+      can turn working farmland into a fenced, single-use site that takes large power and water, against
+      permanent job numbers that are applicant estimates (<a href="#jobs">jobs</a>). Elsham Tech Park would permanently take over 430 acres, roughly 140
       hectares of it best and most versatile farmland (grades 1, 2 and 3a), for up to 1 GW of IT load
       (North Lincolnshire Council committee report PA/2025/643). Once built it is hard to undo; a hall of
       racks and cooling plant does not go back to being a field.
@@ -228,16 +234,17 @@ const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
     <h2 class="font-display text-xl m-0">How the region compares with the US</h2>
     <p class="mt-3 max-w-2xl">
       Single US AI and cloud campuses are often quoted in the <strong>multi-gigawatt</strong> range, and
-      Loudoun County’s measured cluster load alone was about <strong>5.33 GW in 2025</strong>. The whole
-      mapped build-out here, running plus proposed, is about <strong>{statedGw} GW</strong> stated; its
-      largest single figures are around <strong>1 GW</strong> (Elsham’s IT-load parameter and Drax’s
-      longer-term ambition), and both are stated ceilings, not consented running loads. The region is smaller
+      Loudoun County’s data-centre consumption alone was about <strong>5.33 GW in 2025</strong> (Turner,
+      citing Dominion). The mapped schemes here add up to about <strong>{statedGw} GW</strong> of stated size
+      on paper, none of it yet running; {formatNumber(totals.planningMw)} MW of that is in planning documents
+      and the rest is operator figures. The largest single figure is Elsham’s 1 GW IT-load parameter, a
+      ceiling in an application not yet decided, not a running load. The region is smaller
       per site and more constrained on farmland and grid headroom, so friction such as farmland loss, grid
       reuse, and land conflicts like Teesworks shows up at lower absolute megawatts.
     </p>
 
     <div class="mt-6 space-y-4" role="img"
-      aria-label={`Scale comparison: the region's whole mapped build-out about ${statedGw} gigawatts stated; Loudoun County 2025 measured cluster load 5.33 gigawatts.`}>
+      aria-label={`Scale comparison: the region's mapped schemes about ${statedGw} gigawatts stated on paper; Loudoun County 2025 data-centre consumption 5.33 gigawatts.`}>
       {COMPARE.map((row) => (
         <div>
           <div class="flex flex-wrap items-baseline justify-between gap-2 text-sm">
@@ -261,8 +268,9 @@ const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
 
     <p class="mt-4 text-sm text-[var(--muted)] max-w-2xl">
       Metric caution: both sides are cluster-scale, but they are not the same measurement. The regional figure
-      is the stated total of every mapped site, running and proposed. Loudoun’s is measured power actually
-      consumed across the county cluster in 2025. Read it as scale, not a like-for-like league table.
+      adds stated sizes for schemes that are proposed, in planning or approved; no running site here
+      publishes a figure. Loudoun’s is power consumed across the county cluster in 2025, as reported by
+      Supervisor Turner from Dominion data. Read it as scale, not a like-for-like league table.
     </p>
   </section>
 

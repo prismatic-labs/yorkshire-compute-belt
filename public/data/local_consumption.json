@@ -25,6 +25,9 @@
     { "code": "E06000011", "name": "East Riding of Yorkshire", "total_gwh": 1473.9, "domestic_gwh": 534.7 },
     { "code": "E06000010", "name": "Kingston upon Hull", "total_gwh": 1000.4, "domestic_gwh": 337.4 },
     { "code": "E06000013", "name": "North Lincolnshire", "total_gwh": 1060.0, "domestic_gwh": 235.4 },
-    { "code": "E06000012", "name": "North East Lincolnshire", "total_gwh": 686.8, "domestic_gwh": null }
+    { "code": "E06000012", "name": "North East Lincolnshire", "total_gwh": 686.8, "domestic_gwh": 216.0 },
+    { "code": "E06000002", "name": "Middlesbrough", "total_gwh": 402.7, "domestic_gwh": 179.2 },
+    { "code": "E06000003", "name": "Redcar and Cleveland", "total_gwh": 744.6, "domestic_gwh": 180.8 },
+    { "code": "E06000004", "name": "Stockton-on-Tees", "total_gwh": 994.5, "domestic_gwh": 258.7 }
   ]
 }

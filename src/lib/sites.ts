@@ -57,32 +57,39 @@ export function formatLand(site: SiteProperties): string {
   return `${formatNumber(acres.value)} acres · ${typeLabel}`;
 }
 
+/**
+ * Planning-document megawatts and operator-only megawatts are kept apart:
+ * the evidence standard does not let an operator figure stand as site capacity.
+ */
 export function regionalTotals(sites: SiteFeature[] = getSites()) {
-  let disclosedMw = 0;
+  let planningMw = 0;
+  let operatorMw = 0;
   let acres = 0;
   let undisclosedPower = 0;
   for (const f of sites) {
     const best = bestPower(f.properties.power);
-    if (best) disclosedMw += best.quantity.value;
-    else undisclosedPower += 1;
+    if (!best) undisclosedPower += 1;
+    else if (best.quantity.basis === "planning_doc" || best.quantity.basis === "measured")
+      planningMw += best.quantity.value;
+    else operatorMw += best.quantity.value;
     if (f.properties.land.acres) acres += f.properties.land.acres.value;
   }
   return {
     count: sites.length,
-    disclosedMw,
+    planningMw,
+    operatorMw,
+    disclosedMw: planningMw + operatorMw,
     acres,
     undisclosedPower,
-    powerLabel:
-      undisclosedPower > 0
-        ? `≥${formatNumber(disclosedMw)} megawatts disclosed`
-        : `${formatNumber(disclosedMw)} megawatts`,
+    powerLabel: `${formatNumber(planningMw)} MW in planning documents, plus ${formatNumber(operatorMw)} MW stated only by operators`,
   };
 }
 
 export function disclosureChecklist(site: SiteProperties) {
   return {
     power: hasDisclosedPower(site.power),
-    water: site.water_litres_pa != null,
+    // A zero-water claim is an unverified operator statement, not a disclosed volume.
+    water: site.water_litres_pa != null && site.water_litres_pa.value > 0,
     pue: false, // none disclosed in v0 seed set
     energy_source: site.claims_on_record.some((c) =>
       /renewable|biomass|heat/i.test(c.claim),

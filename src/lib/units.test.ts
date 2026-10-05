@@ -7,6 +7,7 @@ import {
   LOAD_FACTOR,
   assumedAnnualGwh,
   bestPower,
+  bmvHectares,
   compareSitesByPower,
   footballPitchesEquivalence,
   homesEquivalence,
@@ -105,6 +106,12 @@ describe("local geography", () => {
     // 1 MW → ~3.5–6.1 GWh — smaller than Smallville alone
     const tiny = localGeographyEquivalence(samplePower(1), authorities);
     expect(tiny?.value.authoritiesUsedLow).toEqual(["Smallville"]);
+    expect(tiny?.label).toMatch(/about up to 1% of Smallville's annual electricity/);
+
+    // 10 MW → ~35–61 GWh → 7–12% of Smallville, not "Smallville" outright
+    const small = localGeographyEquivalence(samplePower(10), authorities);
+    expect(small?.label).toMatch(/about 7-12% of Smallville's annual electricity/);
+    expect(small?.value.lowLabel).toBe("7% of Smallville");
 
     // 1000 MW → 3504–6132 GWh — needs accumulation
     const gw = localGeographyEquivalence(samplePower(1000), authorities);
@@ -150,6 +157,16 @@ describe("water and land", () => {
     };
     expect(wheatForegoneEquivalence(acres, { alcSupportsYield: false })).toBeNull();
     expect(wheatForegoneEquivalence(acres, { alcSupportsYield: true })?.value.low).toBeGreaterThan(0);
+  });
+
+  it("limits wheat to best and most versatile hectares when grades are given", () => {
+    const grades = "Grade 1: 33.4 ha; Grade 2: 49.2 ha; Grade 3a: 59.9 ha; Grade 3b: 25.2 ha; non-agricultural: 12 ha";
+    expect(bmvHectares(grades)).toBeCloseTo(142.5);
+    expect(bmvHectares(null)).toBeNull();
+    const acres = { value: 435, unit: "acres", basis: "planning_doc" as const, source: "test" };
+    const eq = wheatForegoneEquivalence(acres, { alcSupportsYield: true, bmvHectares: bmvHectares(grades) });
+    expect(eq?.value.low).toBeCloseTo(997.5);
+    expect(eq?.value.high).toBeCloseTo(1425);
   });
 });
 

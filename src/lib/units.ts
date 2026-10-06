@@ -224,8 +224,8 @@ export function localGeographyEquivalence(
   return {
     value: match,
     label: bothBelowSmallest
-      ? `At ${pct(LOAD_FACTOR.low)}-${pct(LOAD_FACTOR.high)} load factor: about ${shareRange(gwh.low / smallest.total_gwh, gwh.high / smallest.total_gwh)} of ${smallest.name}'s annual electricity (the smallest council area listed)`
-      : `At ${pct(LOAD_FACTOR.low)}-${pct(LOAD_FACTOR.high)} load factor: about ${match.lowLabel} to ${match.highLabel} (annual electricity)`,
+      ? `At ${pct(LOAD_FACTOR.low)}-${pct(LOAD_FACTOR.high)} load factor: ${shareRange(gwh.low / smallest.total_gwh, gwh.high / smallest.total_gwh)} of ${smallest.name}'s annual electricity (the smallest council area listed)`
+      : `At ${pct(LOAD_FACTOR.low)}-${pct(LOAD_FACTOR.high)} load factor: between ${match.lowLabel} and ${match.highLabel} (annual electricity)`,
     meta: {
       powerKind: np.kind,
       powerBasis: np.basis,
@@ -539,8 +539,8 @@ function shareRange(low: number, high: number): string {
   const lo = Math.round(low * 100);
   const hi = Math.round(high * 100);
   if (high * 100 < 1) return "under 1%";
-  if (low * 100 < 1) return `up to ${hi}%`;
-  return lo === hi ? `${hi}%` : `${lo}-${hi}%`;
+  if (low * 100 < 1) return `up to about ${hi}%`;
+  return lo === hi ? `about ${hi}%` : `about ${lo}-${hi}%`;
 }
 
 export const LOAD_FACTOR_DISCLOSURE =

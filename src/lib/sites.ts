@@ -88,8 +88,10 @@ export function regionalTotals(sites: SiteFeature[] = getSites()) {
 export function disclosureChecklist(site: SiteProperties) {
   return {
     power: hasDisclosedPower(site.power),
-    // A zero-water claim is an unverified operator statement, not a disclosed volume.
+    // A volume on record. A claimed zero is not a measured volume, but it is not
+    // silence either, so it gets its own flag instead of being folded into one of them.
     water: site.water_litres_pa != null && site.water_litres_pa.value > 0,
+    waterClaimedZero: site.water_litres_pa?.value === 0,
     pue: false, // none disclosed in v0 seed set
     energy_source: site.claims_on_record.some((c) =>
       /renewable|biomass|heat/i.test(c.claim),

@@ -106,7 +106,8 @@ describe("local geography", () => {
     // 1 MW → ~3.5–6.1 GWh — smaller than Smallville alone
     const tiny = localGeographyEquivalence(samplePower(1), authorities);
     expect(tiny?.value.authoritiesUsedLow).toEqual(["Smallville"]);
-    expect(tiny?.label).toMatch(/about up to 1% of Smallville's annual electricity/);
+    expect(tiny?.label).toMatch(/up to about 1% of Smallville's annual electricity/);
+    expect(tiny?.label).not.toMatch(/about up to/);
 
     // 10 MW → ~35–61 GWh → 7–12% of Smallville, not "Smallville" outright
     const small = localGeographyEquivalence(samplePower(10), authorities);

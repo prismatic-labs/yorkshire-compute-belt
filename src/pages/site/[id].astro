@@ -253,7 +253,13 @@ const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name
     <h2 class="font-display text-xl m-0">Disclosure checklist</h2>
     <ul class="mt-3 text-sm columns-1 sm:columns-2 gap-8">
       <li>Stated size (MW): {disclosure.power ? "disclosed" : "not disclosed"}</li>
-      <li>Water: {disclosure.water ? "disclosed" : "not disclosed"}</li>
+      <li>
+        Water: {disclosure.water
+          ? "disclosed"
+          : disclosure.waterClaimedZero
+            ? "operator claims zero; no volume published and no independent check"
+            : "not disclosed"}
+      </li>
       <li>Power usage effectiveness (PUE): {disclosure.pue ? "disclosed" : "not disclosed"}</li>
       <li>Energy source claim: {disclosure.energy_source ? "on record" : "none on record"}</li>
       <li>Load factor: {disclosure.load_factor ? "disclosed" : "not disclosed"}</li>

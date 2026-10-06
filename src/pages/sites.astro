@@ -112,7 +112,9 @@ function acresLabel(acres: number | undefined | null) {
               <tr class="border-b border-[var(--line)]">
                 <td class="py-2.5 pr-3"><a href={`${base}/site/${p.id}`}>{p.name}</a></td>
                 <td class={`py-2.5 pr-3 font-tabular ${cellClass(d.power)}`}>{d.power ? "Yes" : "No"}</td>
-                <td class={`py-2.5 pr-3 font-tabular ${cellClass(d.water)}`}>{d.water ? "Yes" : "No"}</td>
+                <td class={`py-2.5 pr-3 font-tabular ${cellClass(d.water)}`}>
+                  {d.water ? "Yes" : d.waterClaimedZero ? "Claims zero" : "No"}
+                </td>
                 <td class={`py-2.5 pr-3 font-tabular ${cellClass(d.pue)}`}>{d.pue ? "Yes" : "No"}</td>
                 <td class={`py-2.5 pr-3 font-tabular ${cellClass(d.energy_source)}`}>{d.energy_source ? "Yes" : "No"}</td>
                 <td class={`py-2.5 font-tabular ${cellClass(d.load_factor)}`}>{d.load_factor ? "Yes" : "No"}</td>

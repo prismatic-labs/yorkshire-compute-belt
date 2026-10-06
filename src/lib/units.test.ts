@@ -159,6 +159,20 @@ describe("water and land", () => {
     expect(wheatForegoneEquivalence(acres, { alcSupportsYield: true })?.value.low).toBeGreaterThan(0);
   });
 
+  it("returns null when an ALC note has no best and most versatile grades", () => {
+    // "Grade 3b" must not count: 3b is not BMV. A gate of /Grade [123]a?/ matched
+    // it, which let the wheat figure fall back to the whole site area.
+    expect(bmvHectares("Grade 3b: 25.2 ha; Grade 4: 18.0 ha")).toBeNull();
+    expect(bmvHectares("Grade 3b: 25.2 ha; non-agricultural: 12 ha")).toBeNull();
+    expect(bmvHectares("no ALC survey carried out")).toBeNull();
+  });
+
+  it("does not read 3b as 3a, and reads thousands separators", () => {
+    expect(bmvHectares("Grade 3a: 10 ha; Grade 3b: 900 ha")).toBeCloseTo(10);
+    expect(bmvHectares("Grade 2: 1,049.2 ha")).toBeCloseTo(1049.2);
+    expect(bmvHectares("Grade 1: 2,000 ha; Grade 3b: 1,000 ha")).toBeCloseTo(2000);
+  });
+
   it("limits wheat to best and most versatile hectares when grades are given", () => {
     const grades = "Grade 1: 33.4 ha; Grade 2: 49.2 ha; Grade 3a: 59.9 ha; Grade 3b: 25.2 ha; non-agricultural: 12 ha";
     expect(bmvHectares(grades)).toBeCloseTo(142.5);

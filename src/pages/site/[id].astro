@@ -39,9 +39,13 @@ const homes = homesEquivalence(p.power);
 const local = localGeographyEquivalence(p.power, authorities);
 const water = waterResidentsEquivalence(p.water_litres_pa);
 const pitches = footballPitchesEquivalence(p.land.acres);
+// Gate on the parsed BMV hectares themselves: a looser text test (for instance
+// /Grade [123]a?/, which also matches "Grade 3b") would let a site with no BMV
+// land through and fall back to wheat over its whole area.
+const bmvHa = bmvHectares(p.land.alc_grades);
 const wheat = wheatForegoneEquivalence(p.land.acres, {
-  alcSupportsYield: Boolean(p.land.alc_grades && /Grade [123]a?/i.test(p.land.alc_grades)),
-  bmvHectares: bmvHectares(p.land.alc_grades),
+  alcSupportsYield: bmvHa != null,
+  bmvHectares: bmvHa,
 });
 const isUrl = (s: string) => /^https?:\/\//.test(s);
 const disclosure = disclosureChecklist(p);

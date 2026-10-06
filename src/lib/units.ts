@@ -364,8 +364,10 @@ export function bmvHectares(alcGrades: string | null | undefined): number | null
   if (!alcGrades) return null;
   let total = 0;
   let found = false;
-  for (const m of alcGrades.matchAll(/Grade (1|2|3a):\s*([\d.]+)\s*ha/gi)) {
-    total += Number(m[2]);
+  for (const m of alcGrades.matchAll(/Grade (1|2|3a):\s*([\d,]*\d(?:\.\d+)?)\s*ha/gi)) {
+    const value = Number(m[2]!.replace(/,/g, ""));
+    if (!Number.isFinite(value)) continue;
+    total += value;
     found = true;
   }
   return found ? total : null;

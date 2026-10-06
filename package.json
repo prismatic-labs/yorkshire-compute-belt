@@ -6,16 +6,18 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "predev": "node scripts/sync-public-data.mjs",
+    "predev": "npm run sync:data",
     "dev": "astro dev",
-    "prebuild": "node scripts/sync-public-data.mjs",
+    "prebuild": "npm run validate:data && npm run sync:data",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
     "lint": "eslint .",
     "check": "astro check",
-    "validate:data": "node --experimental-strip-types scripts/validate-sites.ts"
+    "validate:data": "node --experimental-strip-types scripts/validate-sites.ts",
+    "check:data-sync": "node scripts/sync-public-data.mjs --check",
+    "sync:data": "node scripts/sync-public-data.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",

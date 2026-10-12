@@ -66,7 +66,7 @@ for (const feature of data.features ?? []) {
   }
 
   // Every non-null quantity must carry basis + source
-  const checkQty = (path: string, q: unknown) => {
+  const checkQty = (path: string, q: unknown, units?: readonly string[]) => {
     if (q == null) return;
     if (typeof q !== "object") {
       errors.push(`${path}: expected quantity object or null`);
@@ -76,12 +76,18 @@ for (const feature of data.features ?? []) {
     for (const k of ["value", "unit", "basis", "source"]) {
       if (o[k] == null || o[k] === "") errors.push(`${path}: missing ${k}`);
     }
+    // bestPower counts a power figure only when its unit is exactly "MW".
+    // Anything else would drop the site from the regional total in silence.
+    if (units && typeof o.unit === "string" && !units.includes(o.unit)) {
+      errors.push(`${path}: unit "${o.unit}" is not one of ${units.join(", ")}`);
+    }
   };
 
-  checkQty(`${p.id}.power.grid_connection_mw`, p.power?.grid_connection_mw);
-  checkQty(`${p.id}.power.it_load_mw`, p.power?.it_load_mw);
+  const POWER_UNITS = ["MW", "MVA"] as const;
+  checkQty(`${p.id}.power.grid_connection_mw`, p.power?.grid_connection_mw, POWER_UNITS);
+  checkQty(`${p.id}.power.it_load_mw`, p.power?.it_load_mw, POWER_UNITS);
   checkQty(`${p.id}.power.phase_1_mw`, p.power?.phase_1_mw);
-  checkQty(`${p.id}.power.max_proposed_mw`, p.power?.max_proposed_mw);
+  checkQty(`${p.id}.power.max_proposed_mw`, p.power?.max_proposed_mw, POWER_UNITS);
   checkQty(`${p.id}.water_litres_pa`, p.water_litres_pa);
   checkQty(`${p.id}.land.acres`, p.land?.acres);
 }

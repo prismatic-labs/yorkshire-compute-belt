@@ -103,14 +103,17 @@ export function weakestBasis(...bases: Array<Basis | null | undefined>): Basis |
 
 /** Best available power figure for map/compare scaling and equivalences. */
 export function bestPower(power: PowerBlock): BestPower | null {
+  // MVA is apparent power at a substation, not megawatts; never sum it as MW.
+  // No Yorkshire site states one today, but the sibling London map did and the
+  // two data models are the same, so the guard is here before it is needed.
   for (const kind of POWER_PRIORITY) {
     const q = power[kind];
-    if (q && typeof q.value === "number") {
+    if (q && typeof q.value === "number" && q.unit === "MW") {
       return { kind, quantity: q };
     }
   }
   // it_load only if nothing else — not in map priority, but usable for dossiers
-  if (power.it_load_mw) {
+  if (power.it_load_mw && power.it_load_mw.unit === "MW") {
     return { kind: "it_load_mw", quantity: power.it_load_mw };
   }
   return null;

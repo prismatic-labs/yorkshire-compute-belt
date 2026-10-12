@@ -96,12 +96,15 @@ for (const feature of data.features ?? []) {
 // silently dropped for that site. Safe (we show nothing rather than a figure
 // over the whole site area) but worth seeing, since the cause is usually a
 // wording variant such as "hectares" spelled out or a space before the colon.
-const unparsedAlc = data.features
-  .filter((f: { properties: Record<string, any> }) => {
+interface AlcCheckFeature {
+  properties?: { id?: string; land?: { alc_grades?: unknown } };
+}
+const unparsedAlc = (data.features as AlcCheckFeature[])
+  .filter((f) => {
     const alc = f.properties?.land?.alc_grades;
     return typeof alc === "string" && alc.trim() !== "" && bmvHectares(alc) == null;
   })
-  .map((f: { properties: Record<string, any> }) => f.properties.id);
+  .map((f) => f.properties?.id ?? "(unknown id)");
 if (unparsedAlc.length) {
   console.warn(
     `evidence report (non-blocking): ${unparsedAlc.length} site(s) state ALC grades that do not ` +

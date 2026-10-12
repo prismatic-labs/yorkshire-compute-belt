@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
+import { bmvHectares } from "../src/lib/units.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const schema = JSON.parse(readFileSync(join(root, "data/schema.json"), "utf8"));
@@ -83,6 +84,23 @@ for (const feature of data.features ?? []) {
   checkQty(`${p.id}.power.max_proposed_mw`, p.power?.max_proposed_mw);
   checkQty(`${p.id}.water_litres_pa`, p.water_litres_pa);
   checkQty(`${p.id}.land.acres`, p.land?.acres);
+}
+
+// Non-blocking: ALC text that we cannot parse means the wheat comparison is
+// silently dropped for that site. Safe (we show nothing rather than a figure
+// over the whole site area) but worth seeing, since the cause is usually a
+// wording variant such as "hectares" spelled out or a space before the colon.
+const unparsedAlc = data.features
+  .filter((f: { properties: Record<string, any> }) => {
+    const alc = f.properties?.land?.alc_grades;
+    return typeof alc === "string" && alc.trim() !== "" && bmvHectares(alc) == null;
+  })
+  .map((f: { properties: Record<string, any> }) => f.properties.id);
+if (unparsedAlc.length) {
+  console.warn(
+    `evidence report (non-blocking): ${unparsedAlc.length} site(s) state ALC grades that do not ` +
+      `parse to best-and-most-versatile hectares, so no wheat figure is shown: ${unparsedAlc.join(", ")}`,
+  );
 }
 
 if (errors.length) {

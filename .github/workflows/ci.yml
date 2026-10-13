@@ -19,4 +19,7 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run validate:data
+      # Must run before build: build's prebuild re-syncs public/data and would
+      # hide a data commit that never published its copy.
+      - run: npm run check:data-sync
       - run: npm run build

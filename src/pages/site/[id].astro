@@ -20,6 +20,7 @@ import {
   powerKindLabel,
   waterResidentsEquivalence,
   wheatForegoneEquivalence,
+  bmvHectares,
 } from "../../lib/units";
 
 export function getStaticPaths() {
@@ -38,9 +39,15 @@ const homes = homesEquivalence(p.power);
 const local = localGeographyEquivalence(p.power, authorities);
 const water = waterResidentsEquivalence(p.water_litres_pa);
 const pitches = footballPitchesEquivalence(p.land.acres);
+// Gate on the parsed BMV hectares themselves: a looser text test (for instance
+// /Grade [123]a?/, which also matches "Grade 3b") would let a site with no BMV
+// land through and fall back to wheat over its whole area.
+const bmvHa = bmvHectares(p.land.alc_grades);
 const wheat = wheatForegoneEquivalence(p.land.acres, {
-  alcSupportsYield: Boolean(p.land.alc_grades && /Grade [123]a?/i.test(p.land.alc_grades)),
+  alcSupportsYield: bmvHa != null,
+  bmvHectares: bmvHa,
 });
+const isUrl = (s: string) => /^https?:\/\//.test(s);
 const disclosure = disclosureChecklist(p);
 const [lng, lat] = feature.geometry.coordinates;
 const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name });
@@ -233,7 +240,9 @@ const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name
             <p class="m-0 mt-1 text-sm text-[var(--muted)]">
               {c.made_by}{c.date ? ` · ${c.date}` : ""}{c.deadline ? ` · deadline ${c.deadline}` : ""} · status: {c.status.replaceAll("_", " ")}
             </p>
-            <p class="m-0 text-sm"><a href={c.source} rel="noopener">Source</a></p>
+            <p class="m-0 text-sm">
+              {isUrl(c.source) ? <a href={c.source} rel="noopener">Source</a> : <span class="text-[var(--muted)]">Source: {c.source}</span>}
+            </p>
           </li>
         ))}
       </ul>
@@ -244,7 +253,13 @@ const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name
     <h2 class="font-display text-xl m-0">Disclosure checklist</h2>
     <ul class="mt-3 text-sm columns-1 sm:columns-2 gap-8">
       <li>Stated size (MW): {disclosure.power ? "disclosed" : "not disclosed"}</li>
-      <li>Water: {disclosure.water ? "disclosed" : "not disclosed"}</li>
+      <li>
+        Water: {disclosure.water
+          ? "disclosed"
+          : disclosure.waterClaimedZero
+            ? "operator claims zero; no volume published and no independent check"
+            : "not disclosed"}
+      </li>
       <li>Power usage effectiveness (PUE): {disclosure.pue ? "disclosed" : "not disclosed"}</li>
       <li>Energy source claim: {disclosure.energy_source ? "on record" : "none on record"}</li>
       <li>Load factor: {disclosure.load_factor ? "disclosed" : "not disclosed"}</li>
@@ -288,7 +303,7 @@ const replyMailto = correctionsMailto({ kind: "right-of-reply", siteName: p.name
         <div class:list={["mt-3", c.label === "procedural" && "contested"]}>
           <p class="m-0">{c.summary}</p>
           <p class="m-0 mt-1 text-sm">
-            <a href={c.source} rel="noopener">Source</a>
+            {isUrl(c.source) ? <a href={c.source} rel="noopener">Source</a> : <span class="text-[var(--muted)]">Source: {c.source}</span>}
             {c.label === "campaign" && <span class="text-[var(--muted)]"> · campaign source</span>}
           </p>
         </div>

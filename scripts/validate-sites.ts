@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
+import { bmvHectares } from "../src/lib/units.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const schema = JSON.parse(readFileSync(join(root, "data/schema.json"), "utf8"));
@@ -65,7 +66,7 @@ for (const feature of data.features ?? []) {
   }
 
   // Every non-null quantity must carry basis + source
-  const checkQty = (path: string, q: unknown) => {
+  const checkQty = (path: string, q: unknown, units?: readonly string[]) => {
     if (q == null) return;
     if (typeof q !== "object") {
       errors.push(`${path}: expected quantity object or null`);
@@ -75,14 +76,40 @@ for (const feature of data.features ?? []) {
     for (const k of ["value", "unit", "basis", "source"]) {
       if (o[k] == null || o[k] === "") errors.push(`${path}: missing ${k}`);
     }
+    // bestPower counts a power figure only when its unit is exactly "MW".
+    // Anything else would drop the site from the regional total in silence.
+    if (units && typeof o.unit === "string" && !units.includes(o.unit)) {
+      errors.push(`${path}: unit "${o.unit}" is not one of ${units.join(", ")}`);
+    }
   };
 
-  checkQty(`${p.id}.power.grid_connection_mw`, p.power?.grid_connection_mw);
-  checkQty(`${p.id}.power.it_load_mw`, p.power?.it_load_mw);
+  const POWER_UNITS = ["MW", "MVA"] as const;
+  checkQty(`${p.id}.power.grid_connection_mw`, p.power?.grid_connection_mw, POWER_UNITS);
+  checkQty(`${p.id}.power.it_load_mw`, p.power?.it_load_mw, POWER_UNITS);
   checkQty(`${p.id}.power.phase_1_mw`, p.power?.phase_1_mw);
-  checkQty(`${p.id}.power.max_proposed_mw`, p.power?.max_proposed_mw);
+  checkQty(`${p.id}.power.max_proposed_mw`, p.power?.max_proposed_mw, POWER_UNITS);
   checkQty(`${p.id}.water_litres_pa`, p.water_litres_pa);
   checkQty(`${p.id}.land.acres`, p.land?.acres);
+}
+
+// Non-blocking: ALC text that we cannot parse means the wheat comparison is
+// silently dropped for that site. Safe (we show nothing rather than a figure
+// over the whole site area) but worth seeing, since the cause is usually a
+// wording variant such as "hectares" spelled out or a space before the colon.
+interface AlcCheckFeature {
+  properties?: { id?: string; land?: { alc_grades?: unknown } };
+}
+const unparsedAlc = (data.features as AlcCheckFeature[])
+  .filter((f) => {
+    const alc = f.properties?.land?.alc_grades;
+    return typeof alc === "string" && alc.trim() !== "" && bmvHectares(alc) == null;
+  })
+  .map((f) => f.properties?.id ?? "(unknown id)");
+if (unparsedAlc.length) {
+  console.warn(
+    `evidence report (non-blocking): ${unparsedAlc.length} site(s) state ALC grades that do not ` +
+      `parse to best-and-most-versatile hectares, so no wheat figure is shown: ${unparsedAlc.join(", ")}`,
+  );
 }
 
 if (errors.length) {

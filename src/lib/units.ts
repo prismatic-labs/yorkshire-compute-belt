@@ -103,14 +103,17 @@ export function weakestBasis(...bases: Array<Basis | null | undefined>): Basis |
 
 /** Best available power figure for map/compare scaling and equivalences. */
 export function bestPower(power: PowerBlock): BestPower | null {
+  // MVA is apparent power at a substation, not megawatts; never sum it as MW.
+  // No Yorkshire site states one today, but the sibling London map did and the
+  // two data models are the same, so the guard is here before it is needed.
   for (const kind of POWER_PRIORITY) {
     const q = power[kind];
-    if (q && typeof q.value === "number") {
+    if (q && typeof q.value === "number" && q.unit === "MW") {
       return { kind, quantity: q };
     }
   }
   // it_load only if nothing else — not in map priority, but usable for dossiers
-  if (power.it_load_mw) {
+  if (power.it_load_mw && power.it_load_mw.unit === "MW") {
     return { kind: "it_load_mw", quantity: power.it_load_mw };
   }
   return null;
@@ -210,6 +213,9 @@ export function localGeographyEquivalence(
   const sorted = [...authorities].sort((a, b) => a.total_gwh - b.total_gwh);
   const low = matchAuthorities(gwh.low, sorted);
   const high = matchAuthorities(gwh.high, sorted);
+  const smallest = sorted[0];
+  const bothBelowSmallest =
+    smallest !== undefined && gwh.high < smallest.total_gwh;
   const match: LocalGeoMatch = {
     lowLabel: low.label,
     highLabel: high.label,
@@ -220,7 +226,9 @@ export function localGeographyEquivalence(
   };
   return {
     value: match,
-    label: `At ${pct(LOAD_FACTOR.low)}-${pct(LOAD_FACTOR.high)} load factor: about ${match.lowLabel} to ${match.highLabel} (annual electricity)`,
+    label: bothBelowSmallest
+      ? `At ${pct(LOAD_FACTOR.low)}-${pct(LOAD_FACTOR.high)} load factor: ${shareRange(gwh.low / smallest.total_gwh, gwh.high / smallest.total_gwh)} of ${smallest.name}'s annual electricity (the smallest council area listed)`
+      : `At ${pct(LOAD_FACTOR.low)}-${pct(LOAD_FACTOR.high)} load factor: between ${match.lowLabel} and ${match.highLabel} (annual electricity)`,
     meta: {
       powerKind: np.kind,
       powerBasis: np.basis,
@@ -251,7 +259,15 @@ function matchAuthorities(
     cum += a.total_gwh;
     names.push(a.name);
     if (cum >= targetGwh) {
-      if (names.length === 1) return { label: names[0]!, names };
+      if (names.length === 1) {
+        return {
+          label:
+            targetGwh < a.total_gwh
+              ? `${sharePct(targetGwh / a.total_gwh)} of ${a.name}`
+              : a.name,
+          names,
+        };
+      }
       return {
         label: `${names[0]} + ${names.length - 1} further ${names.length === 2 ? "authority" : "authorities"} (to ${names[names.length - 1]})`,
         names,
@@ -346,12 +362,26 @@ export function footballPitchesEquivalence(
   };
 }
 
+/** Sum of grades 1, 2 and 3a hectares from an ALC note such as "Grade 1: 33.4 ha; Grade 2: 49.2 ha; …". */
+export function bmvHectares(alcGrades: string | null | undefined): number | null {
+  if (!alcGrades) return null;
+  let total = 0;
+  let found = false;
+  for (const m of alcGrades.matchAll(/Grade (1|2|3a):\s*([\d,]*\d(?:\.\d+)?)\s*ha/gi)) {
+    const value = Number(m[2]!.replace(/,/g, ""));
+    if (!Number.isFinite(value)) continue;
+    total += value;
+    found = true;
+  }
+  return found ? total : null;
+}
+
 export function wheatForegoneEquivalence(
   acres: Quantity | null,
-  opts: { alcSupportsYield: boolean },
+  opts: { alcSupportsYield: boolean; bmvHectares?: number | null },
 ): Equivalence<Range> | null {
   if (!acres || !opts.alcSupportsYield) return null;
-  const ha = acres.value / ACRES_PER_HECTARE;
+  const ha = opts.bmvHectares ?? acres.value / ACRES_PER_HECTARE;
   const tonnes: Range = {
     low: ha * WHEAT_TONNES_PER_HA.low,
     high: ha * WHEAT_TONNES_PER_HA.high,
@@ -364,7 +394,9 @@ export function wheatForegoneEquivalence(
       powerBasis: acres.basis,
       quantity: "assumed_average_load",
       assumptions: [
-        `Site area ${acres.value} acres → ${formatNumber(ha)} hectares.`,
+        opts.bmvHectares != null
+          ? `Best and most versatile farmland (grades 1, 2 and 3a) only: ${formatNumber(ha, 1)} hectares of the ${acres.value}-acre site.`
+          : `Site area ${acres.value} acres → ${formatNumber(ha)} hectares.`,
         `Yield ${WHEAT_TONNES_PER_HA.low}-${WHEAT_TONNES_PER_HA.high} tonnes per hectare (indicative; not a site soil survey).`,
         "Only shown where Agricultural Land Classification grades include best and most versatile farmland supporting a yield comparison.",
       ],
@@ -499,6 +531,19 @@ export function formatRange(r: Range, digits = 0): string {
 
 function pct(x: number): string {
   return `${Math.round(x * 100)}%`;
+}
+
+function sharePct(x: number): string {
+  const p = x * 100;
+  return p < 1 ? "under 1%" : `${Math.round(p)}%`;
+}
+
+function shareRange(low: number, high: number): string {
+  const lo = Math.round(low * 100);
+  const hi = Math.round(high * 100);
+  if (high * 100 < 1) return "under 1%";
+  if (low * 100 < 1) return `up to about ${hi}%`;
+  return lo === hi ? `about ${hi}%` : `about ${lo}-${hi}%`;
 }
 
 export const LOAD_FACTOR_DISCLOSURE =

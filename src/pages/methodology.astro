@@ -56,7 +56,12 @@ const correctionMailto = correctionsMailto();
   <section class="mt-12" id="evidence">
     <h2 class="font-display text-xl m-0">Evidence standard</h2>
     <ul class="mt-3 max-w-2xl">
-      <li>Press releases are not evidence for quantitative site capacity unless corroborated by a planning document.</li>
+      <li>
+        Press releases and operator statements are not evidence for site capacity on their own. Where a
+        planning document gives no figure, we still show the operator’s number, labelled <strong>Operator</strong>,
+        and keep it out of the planning-document total: regional totals are split into megawatts in planning
+        documents and megawatts stated only by operators.
+      </li>
       <li>“Sourced” means a specific document and page or paragraph, not merely “the planning portal”.</li>
       <li>A claim with no published data is labelled <code>no public data</code>.</li>
       <li>Campaign sources are labelled as campaign sources.</li>
@@ -83,7 +88,7 @@ const correctionMailto = correctionsMailto();
     <p class="mt-3 max-w-2xl">
       When this site says <strong>Stated size</strong>, it means how large <em>that data-centre scheme</em> claims to be,
       in megawatts: usually the biggest size stated for that site, otherwise the grid connection applied for,
-      otherwise the first stage only. The source for the chosen figure sits with the number on the site page and map panel.
+      otherwise the first stage only, otherwise the IT-equipment load. The source for the chosen figure sits with the number on the site page and map panel.
       That is a size on paper for one site. It is not how much electricity the facility will draw while running, and it is not a
       regional total when two schemes publish the same figure.
     </p>
@@ -108,7 +113,8 @@ const correctionMailto = correctionsMailto();
       </li>
       <li>
         <strong>Local geography</strong>: Department for Energy Security and Net Zero (DESNZ) subnational
-        electricity consumption at local-authority level.
+        electricity consumption at local-authority level. A site whose assumed use is smaller than the
+        smallest council area listed is shown as a percentage of that council, not as the whole council.
         Download the <a href={`${base}/data/local_consumption.json`}>local consumption figures</a>.
       </li>
       <li>
@@ -118,7 +124,7 @@ const correctionMailto = correctionsMailto();
       <li>
         <strong>Land</strong>: acres to football pitches (Football Association pitch about 105×68 metres,
         roughly 1.76 acres). Wheat-foregone only where Agricultural Land Classification (ALC) grades support
-        a yield comparison. Best and most versatile (BMV) farmland is grades 1, 2, and 3a.
+        a yield comparison, and then only on the best and most versatile (BMV) hectares, grades 1, 2, and 3a.
       </li>
       <li>
         <strong>Drax biomass</strong>: pellet tonnes and forestry hectares as ranges.
@@ -131,7 +137,7 @@ const correctionMailto = correctionsMailto();
     <h2 class="font-display text-xl m-0">Circle scaling</h2>
     <p class="mt-3 max-w-2xl">
       Map circles scale by the best available power size for <em>that site</em>, in fixed field priority:
-      biggest size stated for that site, then grid connection applied for, then first stage only.
+      biggest size stated for that site, then grid connection applied for, then first stage only, then IT-equipment load.
       Each site page states which field was used and the source of that figure.
       If two sites publish the same megawatts, both keep that size (joint maximum); compare ranks them equal and lists them A-Z.
       Conflicting maxima in different documents: we record one figure with its source. We do not average.

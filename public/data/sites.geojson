@@ -187,7 +187,7 @@
           "id": null,
           "url": null
         },
-        "summary": "Phase 1 floated under 100 MW on land at Drax Power Station; longer-term ambition to 1 GW. The “carbon-negative data centre” claim rests on unproven bioenergy with carbon capture and storage. Environmental impact assessment screening: the council ruled no full assessment required (contested).",
+        "summary": "First phase of under 100 MW on land at Drax Power Station; this is the size Drax describes for its application. Drax has also spoken of growing beyond 1 GW after 2031; that ambition is not an application and is not counted in our figures. The “carbon-negative data centre” claim rests on unproven bioenergy with carbon capture and storage. Environmental impact assessment screening: the council ruled no full assessment required.",
         "power": {
           "grid_connection_mw": null,
           "it_load_mw": null,
@@ -195,18 +195,11 @@
             "value": 100,
             "unit": "MW",
             "basis": "stated",
-            "source": "Drax Group public materials / trading updates describing a <100 MW first-phase data centre",
+            "source": "Drax AI data centres page: application for a data centre of <100MW (upper bound used)",
             "page": null,
             "archived": null
           },
-          "max_proposed_mw": {
-            "value": 1000,
-            "unit": "MW",
-            "basis": "stated",
-            "source": "Drax Group stated ambition to expand capacity beyond 1 GW (longer-term; not a consented figure)",
-            "page": null,
-            "archived": null
-          }
+          "max_proposed_mw": null
         },
         "water_litres_pa": null,
         "land": {
@@ -243,13 +236,13 @@
           },
           {
             "date": "2026-01",
-            "event": "North Yorkshire Council rules environmental impact assessment not required (screening); contested by campaign groups",
+            "event": "North Yorkshire Council rules environmental impact assessment not required (screening)",
             "source": "https://www.thenorthernecho.co.uk/news/25733193.plans-submitted-data-centre-drax-power-station-selby/"
           }
         ],
         "controversies": [
           {
-            "summary": "North Yorkshire Council screening opinion: no environmental impact assessment required for the data-centre proposal; contested",
+            "summary": "North Yorkshire Council screening opinion: no environmental impact assessment required for the data-centre proposal",
             "source": "https://www.thenorthernecho.co.uk/news/25733193.plans-submitted-data-centre-drax-power-station-selby/",
             "label": "procedural"
           },
@@ -299,7 +292,7 @@
           "id": "PA/2025/643",
           "url": "https://apps.northlincs.gov.uk/application/pa-2025-643"
         },
-        "summary": "Outline application for up to 1 gigawatt of computing equipment power across up to 15 data halls on about 435 acres of agricultural land, including a large share of best and most versatile farmland. The planning committee was minded to approve in March 2026, but the council portal still records no decision issued (checked 2026-07-15); we list the site as in planning until the decision notice appears.",
+        "summary": "Outline application for up to 1 gigawatt of computing equipment power across up to 15 data halls on about 435 acres of agricultural land, including a large share of best and most versatile farmland. The planning committee was minded to approve in March 2026, but the council portal still records no decision issued (checked 2026-07-15); we list the site as in planning until the decision notice appears. A recommended condition caps non-domestic water at 20 m³ a day for each business on site, subject to an approved cooling strategy (committee report PA/2025/643); no annual total is published.",
         "power": {
           "grid_connection_mw": null,
           "it_load_mw": {
@@ -422,28 +415,28 @@
           "id": "PA/2024/584",
           "url": "https://apps.northlincs.gov.uk/application/pa-2024-584"
         },
-        "summary": "Outline permission for a ~386 MW campus on land south of the A160, South Killingholme. Shares directors with Elsham Tech Park Ltd; Greystoke Land links reported.",
+        "summary": "Outline permission for up to three data-centre buildings with up to 384 MW of IT load (about 309,000 m² of floorspace) on land south of the A160, South Killingholme. Trade press reported 386 MW; the planning statement says 384 MW. Shares directors with Elsham Tech Park Ltd; Greystoke Land links reported.",
         "power": {
           "grid_connection_mw": null,
-          "it_load_mw": null,
-          "phase_1_mw": null,
-          "max_proposed_mw": {
-            "value": 386,
+          "it_load_mw": {
+            "value": 384,
             "unit": "MW",
-            "basis": "stated",
-            "source": "Humber Tech Park Ltd / DCD reporting of 386 MW across three buildings; planning description cites up to ~309,000 m² GEA",
-            "page": null,
+            "basis": "planning_doc",
+            "source": "https://www.humbertechpark.com/_files/ugd/3dd663_993ebfa9537649b787c55d32ef55b587.pdf",
+            "page": "Planning Statement: up to three data-centre buildings capable of 384MW of IT load",
             "archived": null
-          }
+          },
+          "phase_1_mw": null,
+          "max_proposed_mw": null
         },
         "water_litres_pa": null,
         "land": {
           "acres": {
             "value": 188,
             "unit": "acres",
-            "basis": "stated",
-            "source": "Place Yorkshire / reporting of South Killingholme site area (~188 acres); confirm against red-line",
-            "page": null,
+            "basis": "planning_doc",
+            "source": "Humber Tech Park planning statement: application site extends to 76 hectares (≈188 acres)",
+            "page": "§1.3",
             "archived": null
           },
           "previous_use": "Greenfield / undeveloped land south of the A160",
@@ -662,7 +655,7 @@
         "operator_response": null,
         "timeline": [
           {
-            "date": "2024-08",
+            "date": "2024-10-04",
             "event": "Wakefield hybrid consent for Mountpark Ferrybridge enabling works and outline employment floorspace (22/02485/HYB) reported decided / approved",
             "source": "https://planning.wakefield.gov.uk/online-applications/applicationDetails.do?activeTab=summary&keyVal=RMF1XRQQ06E00"
           },
@@ -1004,6 +997,77 @@
           }
         ],
         "last_reviewed": "2026-07-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.5393,
+          53.7888
+        ]
+      },
+      "properties": {
+        "id": "aql-leeds",
+        "name": "aql Leeds data centres",
+        "operator": "aql",
+        "status": "operating",
+        "local_authority": "Leeds City Council",
+        "corridor": "yorkshire",
+        "planning_ref": {
+          "id": null,
+          "url": null
+        },
+        "summary": "Yorkshire's established carrier-neutral colocation operator, running Tier 3+ data centres in central Leeds (Hunslet Road DC1/DC2/DC3, including the converted Salem Chapel) plus DC5 at Apex Way, operating since 2006. Home of IXLeeds, which aql describes as the only independent internet exchange in the UK outside London. A city-centre colocation and peering hub rather than a hyperscale build; the location pin is approximate for the Hunslet Road cluster.",
+        "power": {
+          "grid_connection_mw": null,
+          "it_load_mw": null,
+          "phase_1_mw": null,
+          "max_proposed_mw": null
+        },
+        "water_litres_pa": null,
+        "land": {
+          "acres": null,
+          "previous_use": "Central Leeds buildings, including the former Salem Chapel",
+          "land_type": "brownfield",
+          "alc_grades": null
+        },
+        "grid_connection": null,
+        "cooling": null,
+        "claims_on_record": [],
+        "operator_response": null,
+        "timeline": [
+          {
+            "date": "2006",
+            "event": "aql opens its first Leeds data centre (Hunslet Road carrier hub)",
+            "source": "https://aql.com/colocation/"
+          },
+          {
+            "date": "2010-09",
+            "event": "IXLeeds launched, hosted in aql's central Leeds data centres",
+            "source": "https://aql.com/products/ixleeds/"
+          }
+        ],
+        "controversies": [],
+        "sources": [
+          {
+            "label": "aql: colocation / Leeds data centres",
+            "url": "https://aql.com/colocation/",
+            "archived": null
+          },
+          {
+            "label": "aql: IXLeeds internet exchange",
+            "url": "https://aql.com/products/ixleeds/",
+            "archived": null
+          },
+          {
+            "label": "DCD: aql expands in disused Leeds office",
+            "url": "https://www.datacenterdynamics.com/en/news/aql-to-expand-in-disused-leeds-office/",
+            "archived": null
+          }
+        ],
+        "last_reviewed": "2026-07-26"
       }
     }
   ]

@@ -2,6 +2,17 @@
 
 Corrections and material figure changes. Newest first.
 
+## 2026-10-05 — Audit corrections
+
+- Regional total: split into megawatts in planning documents and megawatts stated only by operators. The old "≥2,681 MW" mixed Elsham's planning-document IT load with operator ambitions, and no running site has a megawatt figure.
+- Drax: removed the 1,000 MW "maximum". That was an ambition to grow beyond 1 GW after 2031, not an application; Drax's own page describes an application for under 100 MW. Dropped "contested" from the screening entry: the cited Northern Echo piece does not say so.
+- Humber Tech Park: 386 MW "stated" replaced by IT load of up to 384 MW from the planning statement; site area now sourced to the planning statement (76 ha).
+- Elsham: summary records the recommended 20 m³/day per-business water condition.
+- Ferrybridge consent date corrected to 4 October 2024 (Wakefield portal).
+- aql: "only independent internet exchange outside London" now attributed to aql.
+- Local consumption: added Middlesbrough, Redcar and Cleveland and Stockton-on-Tees (DESNZ 2024), and North East Lincolnshire domestic use (216.0 GWh).
+- `public/data/` is now copied from `data/` before every build; the published GeoJSON had been missing aql Leeds.
+
 ## 2026-07-15 — Teesworks figure relabelled; H2Teesside withdrawal recorded
 
 - Teesworks (`R/2025/0382/ESM`): the ~462,419 m² figure was presented as floorspace; it equals ≈115 acres / 46 ha — the reported **site extent** — so it is now labelled as extent, not floorspace, in the dossier and research checklist.

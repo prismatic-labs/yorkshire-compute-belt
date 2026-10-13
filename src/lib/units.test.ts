@@ -7,6 +7,7 @@ import {
   LOAD_FACTOR,
   assumedAnnualGwh,
   bestPower,
+  bmvHectares,
   compareSitesByPower,
   footballPitchesEquivalence,
   homesEquivalence,
@@ -105,6 +106,13 @@ describe("local geography", () => {
     // 1 MW → ~3.5–6.1 GWh — smaller than Smallville alone
     const tiny = localGeographyEquivalence(samplePower(1), authorities);
     expect(tiny?.value.authoritiesUsedLow).toEqual(["Smallville"]);
+    expect(tiny?.label).toMatch(/up to about 1% of Smallville's annual electricity/);
+    expect(tiny?.label).not.toMatch(/about up to/);
+
+    // 10 MW → ~35–61 GWh → 7–12% of Smallville, not "Smallville" outright
+    const small = localGeographyEquivalence(samplePower(10), authorities);
+    expect(small?.label).toMatch(/about 7-12% of Smallville's annual electricity/);
+    expect(small?.value.lowLabel).toBe("7% of Smallville");
 
     // 1000 MW → 3504–6132 GWh — needs accumulation
     const gw = localGeographyEquivalence(samplePower(1000), authorities);
@@ -151,11 +159,72 @@ describe("water and land", () => {
     expect(wheatForegoneEquivalence(acres, { alcSupportsYield: false })).toBeNull();
     expect(wheatForegoneEquivalence(acres, { alcSupportsYield: true })?.value.low).toBeGreaterThan(0);
   });
+
+  it("returns null when an ALC note has no best and most versatile grades", () => {
+    // "Grade 3b" must not count: 3b is not BMV. A gate of /Grade [123]a?/ matched
+    // it, which let the wheat figure fall back to the whole site area.
+    expect(bmvHectares("Grade 3b: 25.2 ha; Grade 4: 18.0 ha")).toBeNull();
+    expect(bmvHectares("Grade 3b: 25.2 ha; non-agricultural: 12 ha")).toBeNull();
+    expect(bmvHectares("no ALC survey carried out")).toBeNull();
+  });
+
+  it("does not read 3b as 3a, and reads thousands separators", () => {
+    expect(bmvHectares("Grade 3a: 10 ha; Grade 3b: 900 ha")).toBeCloseTo(10);
+    expect(bmvHectares("Grade 2: 1,049.2 ha")).toBeCloseTo(1049.2);
+    expect(bmvHectares("Grade 1: 2,000 ha; Grade 3b: 1,000 ha")).toBeCloseTo(2000);
+  });
+
+  it("limits wheat to best and most versatile hectares when grades are given", () => {
+    const grades = "Grade 1: 33.4 ha; Grade 2: 49.2 ha; Grade 3a: 59.9 ha; Grade 3b: 25.2 ha; non-agricultural: 12 ha";
+    expect(bmvHectares(grades)).toBeCloseTo(142.5);
+    expect(bmvHectares(null)).toBeNull();
+    const acres = { value: 435, unit: "acres", basis: "planning_doc" as const, source: "test" };
+    const eq = wheatForegoneEquivalence(acres, { alcSupportsYield: true, bmvHectares: bmvHectares(grades) });
+    expect(eq?.value.low).toBeCloseTo(997.5);
+    expect(eq?.value.high).toBeCloseTo(1425);
+  });
 });
 
 describe("basis weakness", () => {
   it("inherits the weakest basis", () => {
     expect(weakestBasis("measured", "estimated")).toBe("estimated");
     expect(weakestBasis("planning_doc", "stated")).toBe("stated");
+  });
+});
+
+describe("MVA is never counted as MW", () => {
+  // No Yorkshire site states an MVA figure today. The guard exists because the
+  // sibling London map did, summing substation ratings into its headline.
+  const mva = (value: number): PowerBlock => ({
+    grid_connection_mw: { value, unit: "MVA", basis: "stated", source: "test" },
+    it_load_mw: null,
+    phase_1_mw: null,
+    max_proposed_mw: null,
+  });
+
+  it("ignores an MVA grid connection", () => {
+    expect(bestPower(mva(50))).toBeNull();
+  });
+
+  it("falls through to a lower-priority field that is in MW", () => {
+    const best = bestPower({
+      grid_connection_mw: { value: 80, unit: "MVA", basis: "stated", source: "test" },
+      it_load_mw: null,
+      phase_1_mw: { value: 32, unit: "MW", basis: "planning_doc", source: "test" },
+      max_proposed_mw: null,
+    });
+    expect(best?.kind).toBe("phase_1_mw");
+    expect(best?.quantity.value).toBe(32);
+  });
+
+  it("ignores an MVA it_load fallback too", () => {
+    expect(
+      bestPower({
+        grid_connection_mw: null,
+        it_load_mw: { value: 20, unit: "MVA", basis: "stated", source: "test" },
+        phase_1_mw: null,
+        max_proposed_mw: null,
+      }),
+    ).toBeNull();
   });
 });
